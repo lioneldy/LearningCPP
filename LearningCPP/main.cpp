@@ -52,24 +52,15 @@ bool isPalindrome(int x) {
 
 //10. Regular Expression Matching
 bool isMatch(string s, string p) {
-    long i = s.length();
-    long j = p.length();
-    for (; i&&j; i--,j--) {
-        if (s[i-1] == '.' || p[j-1] == '.')
-            continue;
-        else if ((s[i-1] == '*'&&i>=j) || (p[j-1] == '*'&&j>=i))
-            return true;
-        else if (s[i-1] != p[j-1])
-            return false;
-    }
-    if (i == 0 && j == 0) {
-        return true;
-    }
-    else return false;
+    if (p.empty()) return s.empty();
+    if (p[1] == '*') {
+        return isMatch(s, p.substr(2)) || (!s.empty() && (s[0] == p[0] || p[0] == '.') && isMatch(s.substr(1), p));
+    }else
+    return !s.empty() && (s[0] == p[0] || p[0] == '.') && isMatch(s.substr(1), p.substr(1));
 }
 
 int main(int argc, const char * argv[]) {
-    bool x = isMatch("aaa", "ab*a");
+    bool x = isMatch("abbbbbbbbbba", "ab*a");
     printf("%d\n",x);
     return 0;
 }
