@@ -11,30 +11,16 @@ using namespace std;
 
 //6. ZigZag Conversion
 string convert(string s, int numRows) {
+    if (numRows <= 1) return s;
     string ans = "";
-    if (s.length()==0) {
-        return ans;
-    }
-    if (numRows == 1) {
-        return s;
-    }
     long lens = s.length();
     int k = 2 * numRows - 2;
     for (int i = 0; i < numRows; i++) {
-        bool isOdd = true;
-        for (int j = i; j < lens; ) {
+        for (int j = i; j < lens; j += k) {
             ans = ans + s[j];
-            if (i == 0 || i == (numRows - 1)) {
-                j += k;
-                continue;
-            }
-            if (isOdd) {
-                j = j + k - 2i;
-            }
-            else {
-                j = j + 2i;
-            }
-            isOdd = !isOdd;
+            int secondj = j + k - 2*i;
+            if (i != 0 && i != numRows - 1 && secondj < lens)
+                ans = ans + s[secondj];
         }
     }
     return ans;
