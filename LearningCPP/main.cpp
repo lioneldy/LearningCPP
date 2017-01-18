@@ -9,6 +9,7 @@
 #include <iostream>
 using namespace std;
 
+//6. ZigZag Conversion
 string convert(string s, int numRows) {
     string ans = "";
     if (s.length()==0) {
@@ -39,6 +40,7 @@ string convert(string s, int numRows) {
     return ans;
 }
 
+//7. Reverse Integer
 int reverseInt(int x) {
     long long ans = 0;
     for (; x; x /= 10) {
@@ -50,6 +52,19 @@ int reverseInt(int x) {
     return (int)ans;
 }
 
+//9. Palindrome Number
+bool isPalindrome(int x) {
+    if(x<0|| (x!=0 &&x%10==0)) return false;
+    int sum=0;
+    while(x>sum)
+    {
+        sum = sum*10+x%10;
+        x = x/10;
+    }
+    return (x==sum)||(x==sum/10);
+}
+
+//10. Regular Expression Matching
 bool isMatch(string s, string p) {
     long i = s.length();
     long j = p.length();
