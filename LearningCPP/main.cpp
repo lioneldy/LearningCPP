@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+#include <vector>
 using namespace std;
 
 //6. ZigZag Conversion
@@ -57,6 +58,39 @@ bool isMatch(string s, string p) {
         return isMatch(s, p.substr(2)) || (!s.empty() && (s[0] == p[0] || p[0] == '.') && isMatch(s.substr(1), p));
     }else
     return !s.empty() && (s[0] == p[0] || p[0] == '.') && isMatch(s.substr(1), p.substr(1));
+}
+
+//11. Container With Most Water
+/*int maxArea(vector<int>& height) {
+    long size = height.size();
+    int maxArea = (height[0] < height[1]) ? height[0]:height[1];
+    for (int i = 1; i < size; i ++) {
+        for (int j = 0; j < i; j ++) {
+            int area;
+            if (height[i] < height[j])
+                area = height[i] * (i - j);
+            else area = height[j] * (i - j);
+            if (area > maxArea)
+                maxArea = area;
+        }
+    }
+    return maxArea;
+}*/
+//超时
+int maxArea(vector<int>& height) {
+    int size = (int)height.size();
+    int maxArea = (size - 1) * min(height[0], height[size - 1]);
+    for (int i = 0, j = size - 1; j > i; ) {
+        int area;
+        if (height[i] < height[j])
+            i++;
+        else j--;
+        area = min(height[i], height[j]) * (j - i);
+        if (area > maxArea) {
+            maxArea = area;
+        }
+    }
+    return maxArea;
 }
 
 int main(int argc, const char * argv[]) {
