@@ -138,8 +138,29 @@ int romanToInt(string s) {
     return ans;
 }
 
+//14. Longest Common Prefix
+string longestCommonPrefix(vector<string>& strs) {
+    if (strs.empty()) return "";
+    int maxPrefix = (int)strs[0].length();
+    int size = (int)strs.size();
+    for (int i = 1; i < size; i++) {
+        int j = 0;
+        int length = (int)strs[i].length();
+        for (; j < maxPrefix && j < length; j++) {
+            if (strs[0][j] != strs[i][j]) break;
+        }
+        if (j < maxPrefix) maxPrefix = j;
+    }
+    return strs[0].substr(0,maxPrefix);
+}
+
 int main(int argc, const char * argv[]) {
-    int x = romanToInt("MMCMX");
-    printf("%d\n",x);
+    vector<string> strs;
+    string a = "aa";
+    string b = "a";
+    strs.insert(strs.begin(), b);
+    strs.insert(strs.begin(), a);
+    string substr = longestCommonPrefix(strs);
+//    printf("%d\n",x);
     return 0;
 }
