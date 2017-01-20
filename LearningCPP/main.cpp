@@ -93,8 +93,19 @@ int maxArea(vector<int>& height) {
     return maxArea;
 }
 
+//12. Integer to Roman
+string intToRoman(int num) {
+    string geweiArray[10] = {"","I","II","III","IV","V","VI","VII","VIII","IX"};
+    string shiweiArray[10] = {"","X","XX","XXX","XL","L","LX","LXX","LXXX","XC"};
+    string baiweiArray[10] = {"","C","CC","CCC","CD","D","DC","DCC","DCCC","CM"};
+    string qianweiArray[4] = {"","M","MM","MMM"};
+    string roman = "";
+    roman = qianweiArray[num / 1000] + baiweiArray[(num / 100) % 10] + shiweiArray[(num / 10) % 10] + geweiArray[num % 10];
+    return roman;
+}
+
 int main(int argc, const char * argv[]) {
-    bool x = isMatch("abbbbbbbbbba", "ab*a");
-    printf("%d\n",x);
+    string s = intToRoman(3999);
+    printf("%s\n",s.c_str());
     return 0;
 }
