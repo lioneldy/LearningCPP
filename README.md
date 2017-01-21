@@ -134,3 +134,11 @@ Input is guaranteed to be within the range from 1 to 3999.
 #### 思路：
 
 从上面一题我们可以发现，比如13（XIII）、16（XVI）、14（XIV）、7（VII）、9（IX），我们从右向左扫描整个罗马数字字符串，如果出现I的时候，这个数已经大于5了，比如IV先扫描到V就是5，IX先扫描到X就是10，那么I就应该取-1，其他时候I都取1，同理可以得到X、C的取值规则，而V、L、D是没有相减规则的，取正值即可。这样从右向左扫描完整个字符串，用一个变量来存储每个字符转成数之后的和即可。
+
+## 14. Longest Common Prefix
+
+Write a function to find the longest common prefix string amongst an array of strings.
+
+#### 思路：
+
+因为最长共同前缀字符串一定也是第一个字符串的前缀，所以我们只需要找到最长共同前缀的长度即可，如果只有一个字符串，那它的最长共同前缀就是它本身。如果字符串数组大小大于1，那么从第二个开始往后扫描，依次比较它们与当前最长共同前缀字符串，获得二者的最长前缀，这一定也是整个字符串数组的最长前缀。
