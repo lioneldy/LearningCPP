@@ -154,6 +154,33 @@ string longestCommonPrefix(vector<string>& strs) {
     return strs[0].substr(0,maxPrefix);
 }
 
+//15. 3Sum
+vector<vector<int>> threeSum(vector<int>& nums) {
+    vector<vector<int>> ans;
+    sort(nums.begin(), nums.end());
+    int size = (int)nums.size();
+    for (int i = 0; i < size; i ++) {
+        int begin = i + 1;
+        int end = size - 1;
+        while (begin < end){
+            int sum = nums[i] + nums[begin] +nums[end];
+            if (sum > 0) end--;
+            else if (sum < 0) begin++;
+            else {
+                vector<int> tri(3,0);
+                tri[0] = nums[i];
+                tri[1] = nums[begin];
+                tri[2] = nums[end];
+                ans.push_back(tri);
+                while (begin < end && nums[begin] == tri[1]) begin++;
+                while (begin < end && nums[end] == tri[2]) end--;
+            }
+        }
+        while (i + 1 < size && nums[i] == nums [i+1]) i++;
+    }
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
     vector<string> strs;
     string a = "aa";
