@@ -32,6 +32,19 @@ ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
     return ans -> next;
 }
 
+//3. Longest Substring Without Repeating Characters
+int lengthOfLongestSubstring(string s) {
+    int maxLenth = 0;
+    vector<int> dictMap(256,-1);
+    int m = -1;
+    for (int i = 0; i < s.length(); i++) {
+            m = max(dictMap[s[i]],m);
+            dictMap[s[i]] = i;
+            maxLenth = max(i - m, maxLenth);
+    }
+    return maxLenth;
+}
+
 //6. ZigZag Conversion
 string convert(string s, int numRows) {
     if (numRows <= 1) return s;
@@ -238,11 +251,7 @@ int threeSumClosest(vector<int>& nums, int target) {
 }
 
 int main(int argc, const char * argv[]) {
-    vector<int> nums(4,0);
-    nums[0] = 1;
-    nums[1] = 1;
-    nums[2] = 1;
-    int closest = threeSumClosest(nums, 100);
-    printf("%d\n",closest);
+    int maxLength = lengthOfLongestSubstring("dvdf");
+    printf("%d\n",maxLength);
     return 0;
 }
