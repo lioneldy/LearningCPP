@@ -142,3 +142,30 @@ Write a function to find the longest common prefix string amongst an array of st
 #### 思路：
 
 因为最长共同前缀字符串一定也是第一个字符串的前缀，所以我们只需要找到最长共同前缀的长度即可，如果只有一个字符串，那它的最长共同前缀就是它本身。如果字符串数组大小大于1，那么从第二个开始往后扫描，依次比较它们与当前最长共同前缀字符串，获得二者的最长前缀，这一定也是整个字符串数组的最长前缀。
+
+## 15. 3Sum
+
+Given an array S of n integers, are there elements a, b, c in S such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.
+
+Note: The solution set must not contain duplicate triplets.
+
+	For example, given array S = [-1, 0, 1, 2, -1, -4],
+
+	A solution set is:
+	[
+  	  [-1, 0, 1],
+  	  [-1, -1, 2]
+	]
+	
+#### 思路：
+
+如果把所有的可能都遍历一遍的话，时间复杂度是O(n^3)，必定超时，所以此方案并不可行。要想把时间复杂度降到O(n^2)，我的想法是第一个数确定，剩下的数只扫描一遍，那么时间复杂度就满足要求了。
+
+首先把传入的数组排序，然后从第一个数开始，第一个数确定后，其下标为i，那么我们设两个指针，一个指向第i+1个数，即`begin = i + 1`，第二个指向最后一个数，即`end = size - 1`，因为数组排序过，所以`S[begin]`是剩下数组中最小的数，`S[end]`是最大的数，如果这三个数之和大于0，那么我们只需让最大的数小一些，即`end--`；反之如果三个数之和小于0，则让最小的数大一些，即`begin++`；如果三个数之和为0，那么满足条件，将三个数存入解容器tri中，同时`begin++`和`end--`，直到`begin = end`，一遍循环结束。
+
+这样扫描的好处是第i个数只需要计算n-i次，时间复杂度降到了O(n^2)，还需要注意的一点是题目要求不能有重复的，所以当取到满足条件的数组时，要加一个判断：` 
+while (begin < end && nums[begin] == tri[1]) begin++;
+while (begin < end && nums[end] == tri[2]) end--;`
+
+同时，每次i++的时候加一个
+`while (i + 1 < size && nums[i] == nums [i+1]) i++;`以保证不重复。
