@@ -10,6 +10,28 @@
 #include <vector>
 using namespace std;
 
+struct ListNode {
+         int val;
+         ListNode *next;
+         ListNode(int x) : val(x), next(NULL) {}
+};
+
+//2. Add Two Numbers
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode *sumList = new ListNode(0);
+    ListNode *ans = sumList;
+    int c = 0;
+    while (l1 || l2 || c) {
+        int sum = (l1 ? l1 -> val : 0) + (l2 ? l2 -> val : 0) + c;
+        c = sum/10;
+        sumList -> next = new ListNode(sum % 10);
+        sumList = sumList -> next;
+        if(l1) l1 = l1 -> next;
+        if(l2) l2 = l2 -> next;
+    }
+    return ans -> next;
+}
+
 //6. ZigZag Conversion
 string convert(string s, int numRows) {
     if (numRows <= 1) return s;
