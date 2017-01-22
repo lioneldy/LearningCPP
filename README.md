@@ -169,3 +169,17 @@ while (begin < end && nums[end] == tri[2]) end--;`
 
 同时，每次i++的时候加一个
 `while (i + 1 < size && nums[i] == nums [i+1]) i++;`以保证不重复。
+
+## 16. 3Sum Closest
+
+Given an array S of n integers, find three integers in S such that the sum is closest to a given number, target. Return the sum of the three integers. You may assume that each input would have exactly one solution.
+
+    For example, given array S = {-1 2 1 -4}, and target = 1.
+
+    The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+
+#### 思路：
+
+遍历方式同上一题，此时我们只需要把0换成target比较就可以了，同时用一个closest变量存放最小差值，ans变量存放最小差值时候的sum值，最后返回ans即可，如果遍历过程中出现`sum = target`这种情况直接返回target即可。
+
+注：closest默认值需要取一个比较大的值，否则会出错。
