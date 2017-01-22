@@ -2,6 +2,20 @@
 
 用C++刷Leetcode题
 
+## 2. Add Two Numbers
+
+You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.
+
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+**Input:** (2 -> 4 -> 3) + (5 -> 6 -> 4)
+
+**Output:** 7 -> 0 -> 8
+
+#### 思路：
+
+题目中明确了一点，存储在链表中的数是倒序的，比如例子中的2 -> 4 -> 3表示的数就应该是342，这无疑是降低了难度的，我们只需要从头到尾遍历一遍链表即可，算法就是小学时候的笔算加法，从低位往高位依次加，然后注意一下进位即可。
+
 ## 6. ZigZag Conversion
 
 The string **`"PAYPALISHIRING"`** is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
