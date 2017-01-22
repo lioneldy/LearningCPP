@@ -181,13 +181,46 @@ vector<vector<int>> threeSum(vector<int>& nums) {
     return ans;
 }
 
+//16. 3Sum Closest
+int threeSumClosest(vector<int>& nums, int target) {
+    sort(nums.begin(), nums.end());
+    int size = (int)nums.size();
+    int closest = INT_MAX;
+    int ans = closest;
+    for (int i = 0; i < size; i ++) {
+        int begin = i + 1;
+        int end = size - 1;
+        while (begin < end){
+            int sum = nums[i] + nums[begin] +nums[end];
+            if (sum > target) {
+                if (sum - target < closest) {
+                    closest = sum - target;
+                    ans = sum;
+                }
+                end--;
+            }
+            else if (sum < target) {
+                if (target - sum < closest) {
+                    closest = target - sum;
+                    ans = sum;
+                }
+                begin++;
+            }
+            else {
+                return target;
+            }
+        }
+        while (i + 1 < size && nums[i] == nums [i+1]) i++;
+    }
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
-    vector<string> strs;
-    string a = "aa";
-    string b = "a";
-    strs.insert(strs.begin(), b);
-    strs.insert(strs.begin(), a);
-    string substr = longestCommonPrefix(strs);
-//    printf("%d\n",x);
+    vector<int> nums(4,0);
+    nums[0] = 1;
+    nums[1] = 1;
+    nums[2] = 1;
+    int closest = threeSumClosest(nums, 100);
+    printf("%d\n",closest);
     return 0;
 }
