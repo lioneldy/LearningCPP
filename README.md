@@ -16,6 +16,28 @@ You may assume the two numbers do not contain any leading zero, except the numbe
 
 题目中明确了一点，存储在链表中的数是倒序的，比如例子中的2 -> 4 -> 3表示的数就应该是342，这无疑是降低了难度的，我们只需要从头到尾遍历一遍链表即可，算法就是小学时候的笔算加法，从低位往高位依次加，然后注意一下进位即可。
 
+## 3. Longest Substring Without Repeating Characters
+
+Given a string, find the length of the longest substring without repeating characters.
+
+Examples:
+
+Given `"abcabcbb"`, the answer is `"abc"`, which the length is 3.
+
+Given `"bbbbb"`, the answer is `"b"`, with the length of 1.
+
+Given `"pwwkew"`, the answer is `"wke"`, with the length of 3. Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+
+#### 思路：
+
+用`m`表示当前子串第一个字符的前一个位置，`i`为当前扫描位置，关键的问题是如何判断`s[i]`是否在当前子串重复过，这里我利用的是数组来存储<字符ASCII码，下标（最近出现位置）>，这里只需要一个256大小的数组即可，初始化为`vector<int> dictMap(256,-1)`。
+
+我们从开始向后扫描，如果字符`s[i]`在当前字符串没有出现过，那么此时最大不重复字符串长度`maxLength = max(maxLength, i - m)`（`m`的初始值为`-1`），并令`dictMap[s[i]] = i`。
+
+因为每一个字符只能出现一次，如果出现重复，即`s[i]`处出现重复的话，意味着`dictMap[s[i]] > m`，此时我们需要指定新的不重复字符串的起点，因为`dictMap[s[i]]`表示`s[i]`上一次出现的下标，所以新的子串的第一个字符的前一个位置即`m = dictMap[s[i]]`，最后再令`dictMap[s[i]] = i`。
+
+这样我们就只需要遍历一遍字符串即可得到最长不重复字符串的长度。
+
 ## 6. ZigZag Conversion
 
 The string **`"PAYPALISHIRING"`** is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
