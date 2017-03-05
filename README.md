@@ -219,3 +219,18 @@ Given an array S of n integers, find three integers in S such that the sum is cl
 遍历方式同上一题，此时我们只需要把0换成target比较就可以了，同时用一个closest变量存放最小差值，ans变量存放最小差值时候的sum值，最后返回ans即可，如果遍历过程中出现`sum = target`这种情况直接返回target即可。
 
 注：closest默认值需要取一个比较大的值，否则会出错。
+
+## 17. Letter Combinations of a Phone Number
+
+Given a digit string, return all possible letter combinations that the number could represent.
+
+	Input:Digit string "23"
+	Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+
+Note:
+
+Although the above answer is in lexicographical order, your answer could be in any order you want.
+
+#### 思路
+
+利用动态规划的思路，依次遍历数字字符串，每遍历一个数字，将现有vector中的字符串挨个与之可能的字符结合生成新字符串，并更新vector。
