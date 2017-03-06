@@ -86,4 +86,15 @@ $$P(O\mid\lambda)=\sum_{i_1,i_2,\cdots,i_T}\pi_{i_1}b_{i_1}(o_1)a_{i_1i_2}\pi_{i
 
 #### 问题3的解法
 ----
+为了描述迭代更新参数模型的过程，我们引入变量$\xi_t(i,j)$表示在已给参数变量$\lambda$和观测序列$O$的情况下，$t$时刻状态为$S_i$且$t+1$时刻状态为$S_j$的概率，即$$\xi_t(i,j)=P(q_t=S_i,q_{t+1}=S_j\mid O,\lambda)$$在之前我们已经给过$\gamma_t(i)$的定义，由定义我们可知二者有以下关系$$\gamma_t(i)=\sum_{j=1}^N\xi_t(i,j)$$
 
+##### Baum-Welch算法实现
+
+输入：观测数据$O=(o_1,o_2,\cdots,o_t)$；
+
+输出：隐式马尔科夫模型参数$\lambda(A,B,\pi)$。
+
+1. 初始化
+	- 对$n=0$，选取$a_{ij}^{(0)},b_j(k)^{(0)},\pi_i^{(0)}$，得到模型$\lambda^{(0)}=(A^{(0)},B^{(0)},\pi^{(0)})$ 
+2. 递推. 对$n=1,2,\cdots,$$$a_{ij}^{(n+1)}=\frac {\sum_{t=1}^{T-1}\xi_t(i,j)}{\sum_{t=1}^{T-1}\gamma_t(i)}$$$$b_{ij}(k)^{(n+1)}=\frac {\sum_{t=1,o_t=v_k}^{T}\gamma_t(j)}{\sum_{t=1}^{T}\gamma_t(i)}$$$$\pi_i^{(n+1)}=\gamma_1(i)$$
+3. 终止. 得到模型参数$\lambda^{(n+1)}=(A^{(n+1)},B^{(n+1)},\pi^{(n+1)})$

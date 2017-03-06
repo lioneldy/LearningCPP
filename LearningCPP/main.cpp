@@ -306,6 +306,49 @@ vector<string> letterCombinations(string digits) {
     return ans;
 }
 
+//18. 4Sum
+vector<vector<int>> fourSum(vector<int>& nums, int target) {
+    vector<vector<int>> ans;
+    int size = (int)nums.size();
+    if (size < 3) {
+        return ans;
+    }
+    sort(nums.begin(), nums.end());
+    for (int i = 0; i < size; i++) {
+        int target_3 = target - nums[i];
+        for (int j = i + 1; j < size; j++) {
+            int target_2 = target_3 - nums[j];
+            int begin = j + 1;
+            int end = size - 1;
+            while (begin < end) {
+                int twosum = nums[begin] + nums[end];
+                if (twosum > target_2) {
+                    end--;
+                }
+                else if (twosum < target_2) {
+                    begin++;
+                }else {
+                    vector<int> temp(4,0);
+                    temp[0] = nums[i];
+                    temp[1] = nums[j];
+                    temp[2] = nums[begin];
+                    temp[3] = nums[end];
+                    ans.push_back(temp);
+                    while (begin < end && nums[begin] == temp[2]) {
+                        begin++;
+                    }
+                    while (begin < end && nums[end] == temp[3] ) {
+                        end--;
+                    }
+                }
+            }
+            while (j + 1 < size && nums[j] == nums [j+1]) j++;
+        }
+        while (i + 1 < size && nums[i] == nums [i+1]) i++;
+    }
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
     vector<string> ans = letterCombinations("23");
     return 0;

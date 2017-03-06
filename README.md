@@ -233,4 +233,25 @@ Although the above answer is in lexicographical order, your answer could be in a
 
 #### 思路
 
-利用动态规划的思路，依次遍历数字字符串，每遍历一个数字，将现有vector中的字符串挨个与之可能的字符结合生成新字符串，并更新vector。
+利用动态规划的思路，依次遍历数字字符串，每遍历一个数字，将现有vector中的字符串挨个与之可能的字符结合生成新字符串，并更新vector。比如按第一个键，假设有三种可能"abc"，再按第二个键有"def"，更新vector后从3种增加到3\*3=9种，如果再多一个按键有"wxyz"，依次与vector种已有元素结合后就从9种增加到9\*4=36种。
+
+## 18. 4Sum
+
+Given an array S of n integers, are there elements a, b, c, and d in S such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.
+
+Note: The solution set must not contain duplicate quadruplets.
+
+For example, given array S = [1, 0, -1, 0, -2, 2], and target = 0.
+
+	A solution set is:
+	[
+  	[-1,  0, 0, 1],
+  	[-2, -1, 1, 2],
+  	[-2,  0, 0, 2]
+	]
+	
+#### 思路
+
+基于第15题3sum，我们先确定第一个数，然后把问题降到3sum，再确定第二个数把问题降到2sum，这样总共需要计算n\*(n-1)\*n次，所以这样解法的时间复杂度是O(n^3)。
+
+依次类推，还可以把这个解法推广到Nsum。
