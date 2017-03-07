@@ -255,3 +255,23 @@ For example, given array S = [1, 0, -1, 0, -2, 2], and target = 0.
 基于第15题3sum，我们先确定第一个数，然后把问题降到3sum，再确定第二个数把问题降到2sum，这样总共需要计算n\*(n-1)\*n次，所以这样解法的时间复杂度是O(n^3)。
 
 依次类推，还可以把这个解法推广到Nsum。
+
+## 19. Remove Nth Node From End of List
+
+Given a linked list, remove the nth node from the end of list and return its head.
+
+	For example,
+
+   	Given linked list: 1->2->3->4->5, and n = 2.
+
+   	After removing the second node from the end, the linked list becomes 1->2->3->5.
+
+Note:
+Given n will always be valid.
+Try to do this in one pass.
+
+#### 思路
+
+因为题目要求只遍历一次，所以需要两个指针。假设链表长度为m，一个指针先走n步，另外一个指针再跟着一起走直到第一个指针走到尾部，这样第一个指针走了m步，第二个指针走了m-n步，第二个指针所指向的节点即是需删除节点。
+
+需要注意，我们应添加一个头指针来指向链表头部，两个指针从头指针开始出发，而不是传入的链表头，否则会出错。

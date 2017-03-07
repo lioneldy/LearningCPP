@@ -349,6 +349,23 @@ vector<vector<int>> fourSum(vector<int>& nums, int target) {
     return ans;
 }
 
+//19. Remove Nth Node From End of List
+ListNode* removeNthFromEnd(ListNode* head, int n) {
+    ListNode realHead(0);
+    realHead.next = head;
+    head = &realHead;
+    ListNode *p = &realHead;
+    while (n-- > 0) {
+        p = p -> next;
+    }
+    while (!p -> next) {
+        p = p -> next;
+        head = head -> next;
+    }
+    head -> next = head -> next -> next;
+    return realHead.next;
+}
+
 int main(int argc, const char * argv[]) {
     vector<string> ans = letterCombinations("23");
     return 0;
