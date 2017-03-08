@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <vector>
+
 using namespace std;
 
 struct ListNode {
@@ -366,7 +367,54 @@ ListNode* removeNthFromEnd(ListNode* head, int n) {
     return realHead.next;
 }
 
+//20. Valid Parentheses
+bool isValid(string s) {
+    string stack = "";
+    int size = 0;
+    for (int i = 0; i < s.length(); i++) {
+        if (s[i] == '(' || s[i] == '[' || s[i] == '{') {
+            stack += s[i];
+            size++;
+        }
+        if (s[i] == ')') {
+            if (stack[size - 1] != '(') {
+                return false;
+            }
+            size--;
+            if (size < 0) {
+                return false;
+            }
+            stack = stack.substr(0,size);
+        }
+        if (s[i] == ']') {
+            if (stack[size - 1] != '[') {
+                return false;
+            }
+            size--;
+            if (size < 0) {
+                return false;
+            }
+            stack = stack.substr(0,size);
+        }
+        if (s[i] == '}') {
+            if (stack[size - 1] != '{') {
+                return false;
+            }
+            size--;
+            if (size < 0) {
+                return false;
+            }
+            stack = stack.substr(0,size);
+        }
+    }
+    
+    if (size > 0) {
+        return false;
+    }
+    return true;
+}
+
 int main(int argc, const char * argv[]) {
-    vector<string> ans = letterCombinations("23");
+//    bool x = isValid("()");
     return 0;
 }
