@@ -275,3 +275,13 @@ Try to do this in one pass.
 因为题目要求只遍历一次，所以需要两个指针。假设链表长度为m，一个指针先走n步，另外一个指针再跟着一起走直到第一个指针走到尾部，这样第一个指针走了m步，第二个指针走了m-n步，第二个指针所指向的节点即是需删除节点。
 
 需要注意，我们应添加一个头指针来指向链表头部，两个指针从头指针开始出发，而不是传入的链表头，否则会出错。
+
+## 20. Valid Parentheses
+
+Given a string containing just the characters `'('`, `')'`, `'{'`, `'}'`, `'['` and `']'`, determine if the input string is valid.
+
+The brackets must close in the correct order, `"()"` and `"()[]{}"` are all valid but `"(]"` and `"([)]"` are not.
+
+#### 思路
+
+利用栈可以很好地解决这个问题，当遇到左括号时入栈，遇到右括号时出栈，如果匹配则继续扫描，否则返回false，需要注意的是只能是对应的左右括号算匹配。
