@@ -285,3 +285,11 @@ The brackets must close in the correct order, `"()"` and `"()[]{}"` are all vali
 #### 思路
 
 利用栈可以很好地解决这个问题，当遇到左括号时入栈，遇到右括号时出栈，如果匹配则继续扫描，否则返回false，需要注意的是只能是对应的左右括号算匹配。
+
+## 21. Merge Two Sorted Lists
+
+Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.
+
+#### 思路
+
+这题比较简单，新建一个链表，当l1与l2不为空时比较两个指针所指值的大小，较小的加入新链表尾部，然后其指针往后走一步，若其中一个指针走到头了，即为空的时候，把另外一个非空链表加入新链表尾部即可。
