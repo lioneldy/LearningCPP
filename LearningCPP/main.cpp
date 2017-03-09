@@ -25,10 +25,10 @@ ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
     while (l1 || l2 || c) {
         int sum = (l1 ? l1 -> val : 0) + (l2 ? l2 -> val : 0) + c;
         c = sum/10;
-        sumList -> next = new ListNode(sum % 10);
-        sumList = sumList -> next;
-        if(l1) l1 = l1 -> next;
-        if(l2) l2 = l2 -> next;
+        sumList->next = new ListNode(sum % 10);
+        sumList = sumList->next;
+        if(l1) l1 = l1->next;
+        if(l2) l2 = l2->next;
     }
     return ans -> next;
 }
@@ -357,13 +357,13 @@ ListNode* removeNthFromEnd(ListNode* head, int n) {
     head = &realHead;
     ListNode *p = &realHead;
     while (n-- > 0) {
-        p = p -> next;
+        p = p->next;
     }
-    while (!p -> next) {
-        p = p -> next;
-        head = head -> next;
+    while (p->next != nullptr) {
+        p = p->next;
+        head = head->next;
     }
-    head -> next = head -> next -> next;
+    head->next = head->next->next;
     return realHead.next;
 }
 
@@ -414,7 +414,30 @@ bool isValid(string s) {
     return true;
 }
 
+//21. Merge Two Sorted Lists
+ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+    ListNode head(0);
+    ListNode *p = &head;
+    while (l1 && l2) {
+        if (l1->val < l2->val) {
+            p->next = l1;
+            l1 = l1->next;
+        }else {
+            p->next = l2;
+            l2 = l2->next;
+        }
+        p = p->next;
+    }
+    if (l1 != nullptr) {
+        p->next = l1;
+    }
+    if (l2 != nullptr) {
+        p->next = l2;
+    }
+    return head.next;
+}
+
 int main(int argc, const char * argv[]) {
-//    bool x = isValid("()");
+
     return 0;
 }
