@@ -293,3 +293,21 @@ Merge two sorted linked lists and return it as a new list. The new list should b
 #### 思路
 
 这题比较简单，新建一个链表，当l1与l2不为空时比较两个指针所指值的大小，较小的加入新链表尾部，然后其指针往后走一步，若其中一个指针走到头了，即为空的时候，把另外一个非空链表加入新链表尾部即可。
+
+## 22. Generate Parentheses
+
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+For example, given n = 3, a solution set is:
+
+	[
+  	"((()))",
+  	"(()())",
+  	"(())()",
+  	"()(())",
+  	"()()()"
+	]
+
+#### 思路
+
+n对括号，有n个左括号和n个右括号，我们通过观察可以发现一些规律，首先是任意前m个字符中一定是左括号大于等于右括号的，不然这个字符串就是不合法的，其次就是第一个字符一定是左括号，最后一个字符一定是右括号。我们可以用一个递归来完成输出，如果右括号数等于n则将当前字符串存入vector；如果左括号小于n，字符串加一个"("，然后左括号数加一并递归调用；如果右括号小于左括号数，字符串加一个")"，然后右括号数加一并递归调用。

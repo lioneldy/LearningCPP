@@ -437,7 +437,27 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
     return head.next;
 }
 
-int main(int argc, const char * argv[]) {
+//22. Generate Parentheses
+void generateParenthesisPart(vector<string> &ans, int rn, int ln, int n, string s) {
+    if (rn == n) {
+        ans.push_back(s);
+        return;
+    }
+    if (ln < n) {
+        generateParenthesisPart(ans, rn, ln + 1, n, s + "(");
+    }
+    if (rn < ln) {
+        generateParenthesisPart(ans, rn + 1, ln, n, s + ")");
+    }
+}
 
+vector<string> generateParenthesis(int n) {
+    vector<string> ans;
+    generateParenthesisPart(ans, 0, 0, n, "");
+    return ans;
+}
+
+int main(int argc, const char * argv[]) {
+    vector<string> res = generateParenthesis(3);
     return 0;
 }
