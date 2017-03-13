@@ -457,7 +457,21 @@ vector<string> generateParenthesis(int n) {
     return ans;
 }
 
+//23. Merge k Sorted Lists
+ListNode* mergeKLists(vector<ListNode*>& lists) {
+    int k = (int)lists.size();
+    if (k == 0) {
+        return nullptr;
+    }
+    while (k > 1) {
+        for (int i = 0; i < k/2; i++) {
+            lists[i] = mergeTwoLists(lists[i], lists[k - 1 - i]);
+        }
+        k = (k+1)/2;
+    }
+    return lists.front();
+}
+
 int main(int argc, const char * argv[]) {
-    vector<string> res = generateParenthesis(3);
     return 0;
 }
