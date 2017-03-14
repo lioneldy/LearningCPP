@@ -311,3 +311,34 @@ For example, given n = 3, a solution set is:
 #### 思路
 
 n对括号，有n个左括号和n个右括号，我们通过观察可以发现一些规律，首先是任意前m个字符中一定是左括号大于等于右括号的，不然这个字符串就是不合法的，其次就是第一个字符一定是左括号，最后一个字符一定是右括号。我们可以用一个递归来完成输出，如果右括号数等于n则将当前字符串存入vector；如果左括号小于n，字符串加一个"("，然后左括号数加一并递归调用；如果右括号小于左括号数，字符串加一个")"，然后右括号数加一并递归调用。
+
+## 23. Merge K Sorted Lists
+
+Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+
+#### 思路
+
+采用类似归并排序的思路，从list中选两个链表，利用21题方法排序，两两排序后直到最后list里面只剩一个链表，假设有N个链表，平均每个链表长度为M，算法复杂度大概是O(M*logN)。
+
+## 24. Swap Nodes in Pairs
+
+Given a linked list, swap every two adjacent nodes and return its head.For example,Given 1->2->3->4, you should return the list as 2->1->4->3.Your algorithm should use only constant space. You may not modify the values in the list, only nodes itself can be changed.
+
+#### 思路
+
+如果链表长度是偶数，则两两配对翻转，1->2->3->4 => 2->1->4->3。
+
+如果链表长度是奇数，则最后一个不变，1->2->3->4->5 => 2->1->4->3->5。
+
+我用到了3个指针，p、q、r分别指向待交换对的第一个节点、第二个节点以及上一对的后节点，基本交换步骤如下：
+
+	while(p != nullptr) {	//当p不为空时循环
+		q = p->next;
+		if(q == nullptr) break;		//当链表长度为奇数时最后节点不做交换
+		r->next = q;
+		r = p;					//上一对节点末尾指向当前对
+		p->next = q->next;
+		q->next = p;			//交换两个节点
+		p->next = q;			
+		p = p->next;			//p指向下一对待交换对的第一个节点
+	}
