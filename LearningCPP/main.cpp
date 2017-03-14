@@ -472,6 +472,32 @@ ListNode* mergeKLists(vector<ListNode*>& lists) {
     return lists.front();
 }
 
+//24. Swap Nodes in Pairs
+ListNode* swapPairs(ListNode* head) {
+    if (head == nullptr || head->next == nullptr) {
+        return head;
+    }
+    ListNode *p = head;
+    ListNode *q = head->next;
+    head = q;
+    ListNode *r = p;
+    p->next = q->next;
+    q->next = p;
+    p = p->next;
+    while (p != nullptr) {
+        q = p->next;
+        if (q == nullptr) {
+            break;
+        }
+        r->next = q;
+        r = p;
+        p->next = q->next;
+        q->next = p;
+        p = p->next;
+    }
+    return head;
+}
+
 int main(int argc, const char * argv[]) {
     return 0;
 }
