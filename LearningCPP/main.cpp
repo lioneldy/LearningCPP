@@ -525,6 +525,53 @@ ListNode* reverseKGroup(ListNode* head, int k) {
     return preHead.next;
 }
 
+//26. Remove Duplicates from Sorted Array
+int removeDuplicates(vector<int>& nums) {
+    if(nums.empty()) return 0;
+    int temp = nums[0];
+    int length = 1;
+    for(int i = 1; i < nums.size(); i++) {
+        if(nums[i] == temp) continue;
+        else {
+            temp = nums[i];
+            nums[length++] = temp;
+        }
+    }
+    return length;
+}
+
+//27. Remove Element
+int removeElement(vector<int>& nums, int val) {
+    int length = 0;
+    for(int i = 0; i < nums.size(); i++){
+        if(nums[i] == val) continue;
+        else nums[length++] = nums[i];
+    }
+    return length;
+}
+
+//28. Implement strStr()
+int strStr(string haystack, string needle) {
+    int len1 = (int)haystack.length(), len2 = (int)needle.length();
+    if(len2 == 0) return 0;
+    int ans = -1;
+    for (int i = 0; i <= len1 - len2; i++) {
+        if (haystack[i] == needle[0]) {
+            for (int j = 0; j < len2; j++) {
+                if (haystack[i + j] != needle[j]) {
+                    break;
+                } else ans++;
+            }
+            if (ans == len2 - 1) {
+                return i;
+            }
+            ans = -1;
+        }
+    }
+    return -1;
+}
+
 int main(int argc, const char * argv[]) {
+    strStr("mississippi", "issip");
     return 0;
 }
