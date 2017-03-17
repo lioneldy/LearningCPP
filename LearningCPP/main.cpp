@@ -498,6 +498,33 @@ ListNode* swapPairs(ListNode* head) {
     return head;
 }
 
+//25. Reverse Nodes in k-Group 
+ListNode* reverseKGroup(ListNode* head, int k) {
+    if(k == 1) return head;
+    ListNode preHead(-1);
+    preHead.next = head;
+    ListNode *p, *q, *pre;
+    pre = &preHead;
+    int n = 0;
+    while (head != nullptr) {
+        n++;
+        head = head->next;
+    }
+    while (n >= k) {
+        p = pre->next;
+        q = p->next;
+        for (int i = 1; i < k; i++) {
+            p->next = q->next;
+            q->next = pre->next;
+            pre->next = q;
+            q = p->next;
+        }
+        pre = p;
+        n -= k;
+    }
+    return preHead.next;
+}
+
 int main(int argc, const char * argv[]) {
     return 0;
 }
