@@ -571,7 +571,25 @@ int strStr(string haystack, string needle) {
     return -1;
 }
 
+//29. Divide Two Integers
+int divide(int dividend, int divisor) {
+    if(divisor == 0 || (dividend == INT_MIN && divisor == -1)) return INT_MAX;
+    long divid = labs(dividend);
+    long divis = labs(divisor);
+    int ans = 0;
+    while (divid >= divis) {
+        long temp = divis, times = 1;
+        while (divid >= (temp << 1)) {
+            temp <<= 1;
+            times <<= 1;
+        }
+        divid -= temp;
+        ans += times;
+    }
+    if ((divisor > 0) ^ (dividend > 0)) return -ans;
+    else return ans;
+}
+
 int main(int argc, const char * argv[]) {
-    strStr("mississippi", "issip");
     return 0;
 }
