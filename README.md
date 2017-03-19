@@ -342,3 +342,126 @@ Given a linked list, swap every two adjacent nodes and return its head.For examp
 		p->next = q;			
 		p = p->next;			//p指向下一对待交换对的第一个节点
 	}
+	
+## 25. Reverse Nodes in k-Group
+
+Given a linked list, reverse the nodes of a linked list k at a time and return its modified list.
+
+k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes in the end should remain as it is.
+
+You may not alter the values in the nodes, only nodes itself may be changed.
+
+Only constant memory is allowed.
+
+For example,
+
+Given this linked list: `1->2->3->4->5`
+
+For k = 2, you should return: `2->1->4->3->5`
+
+For k = 3, you should return: `3->2->1->4->5`
+
+#### 思路
+
+题目要求对链表进行k元组翻转，24题是k=2的情况，现在把k扩展到任意正整数的情况。从所给的例子中，我们不难发现，当链表剩下的节点数小于k的时候是不进行翻转的。我们以一个长度为5的链表进行3元组翻转作示例，来讲解我的思路：
+
+	-1 -> 1 -> 2 -> 3 -> 4 -> 5
+	 |    |    |    
+	pre  cur  nex  
+
+	-1 -> 2 -> 1 -> 3 -> 4 -> 5
+ 	 |         |    |     
+	pre       cur  nex  
+
+	-1 -> 3 -> 2 -> 1 -> 4 -> 5
+	 |              |    |     
+	pre            cur  nex  
+	
+上图是一次循环所进行的步骤，首先需要给当前需要翻转的k元祖申请一个头指针pre，指向该链表的第一个节点的前序节点，cur指针指向当前k元组的第一个节点，nex指针指向k元祖中需要翻转的下一个节点。
+
+   	while(num>=k) {						//num为链表长度，需提前遍历一遍链表得到，当剩余链表长度不小于k时继续翻转
+   		cur = pre->next;				//初始化当前k元组的cur指针
+      	nex = cur->next;
+      	for(int i = 1; i < k; ++i) {	//每次将k元组的下一个节点放到最前面，k-1次后完成翻转
+		cur->next = nex->next;
+		nex->next = pre->next;
+		pre->next = nex;
+		nex = cur->next;
+		}
+		pre = cur;						//一个k元组完成翻转，更新pre指针指向下一个k元组的第一个节点的前序节点
+		num -= k;						//更新剩余未翻转链表长度
+	}
+
+## 26. Remove Duplicates from Sorted Array
+
+Given a sorted array, remove the duplicates in place such that each element appear only once and return the new length.
+
+Do not allocate extra space for another array, you must do this in place with constant memory.
+
+For example,
+Given input array nums = [1,1,2],
+
+Your function should return length = 2, with the first two elements of nums being 1 and 2 respectively. It doesn't matter what you leave beyond the new length.
+
+#### 思路
+
+这个题比较简单，首先数组是已经排序的，我们只要遍历一遍就可以将重复的数找出来，得到不重复的数组长度length。但是需要注意的一点是，我们还需要更新vector，将前length个数更新成不重复的数，遍历过程中执行下列操作即可：
+
+	if(nums[i] == temp) continue;
+        else {
+            temp = nums[i];
+            nums[length++] = temp;
+        }
+
+## 27. Remove Element
+
+Given an array and a value, remove all instances of that value in place and return the new length.
+
+Do not allocate extra space for another array, you must do this in place with constant memory.
+
+The order of elements can be changed. It doesn't matter what you leave beyond the new length.
+
+Example:
+Given input array nums = [3,2,2,3], val = 3
+
+Your function should return length = 2, with the first two elements of nums being 2.
+
+#### 思路
+
+这个题和上一题很类似，上一题是需要返回不重复数的个数，并将vector前length个数更新成不重复的数。而这一题更简单：
+
+	if(nums[i] == val) continue;
+        else nums[length++] = nums[i];
+        
+## 28. Implement strStr()
+
+Implement strStr().
+
+Returns the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
+
+#### 思路
+
+题目的意思是，如果needle是haystack的子串，那么返回haystack的子串中等于needle的第一个子串的首字符的下标，如果needle不是haystack的子串那么返回-1.
+
+	if (haystack[i] == needle[0]) {		//遍历haystack
+		for (int j = 0; j < len2; j++) {	//如果有字符与needle首字符相同，比较后续字符
+		if (haystack[i + j] != needle[j]) break;  //如果有不相同的字符结束比较
+		else ans++;
+		}
+		if (ans == len2 - 1) return i;	//如果相同字符数与needle长度相等则结束
+		ans = -1;
+	}
+	
+## 29. Divide Two Integers
+
+Divide two integers without using multiplication, division and mod operator.
+
+If it is overflow, return MAX_INT.
+
+#### 思路
+
+不使用乘、除以及求余三种运算来实现除法，那么第一时间想到的就是除法的本质，被除数是由商个除数相加，再加上余数得到的，那么只需要取被除数和除数的绝对值，然后循环，当被除数的绝对值大于零就减去除数，减的次数即为商，最后根据除数和被除数是否同号来决定商的符号。
+
+但是这样做的话会超时，这里我想到的是利用位运算来降低复杂度。比如15除以3，先将3(11)左移一位得到6(110)，15>6，继续左移，12(1100)依然比15小，此时再左移24就比15大了，所以不再左移，此时左移了两位，那么商就是1<<2 = 100(4)，剩下15 - 12 = 3继续算，循环条件也是当被除数的绝对值小于除数绝对值时停止循环。
+
+最后，溢出时需要返回MAX_INT，而此题溢出的情况只有两种，一是除数为0的时候，二是被除数为MIN_INT，除数为-1的时候。
