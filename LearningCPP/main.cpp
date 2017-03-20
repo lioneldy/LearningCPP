@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
@@ -590,6 +591,34 @@ int divide(int dividend, int divisor) {
     else return ans;
 }
 
+//30. Substring with Concatenation of All Words
+vector<int> findSubstring(string s, vector<string>& words) {
+    vector<int> ans;
+    if (words.size() == 0 || s.size() == 0) return ans;
+    unordered_map<string, int> dict;
+    for (int i = 0; i < words.size(); i++) dict[words[i]]++;
+    int len = (int)words[0].length(), nums = (int)words.size(), n = (int)s.length();
+    for (int i = 0; i <= n - nums * len; i++) {
+        unordered_map<string, int> seen;
+        int j = 0;
+        for (; j < nums; j++) {
+            string temp = s.substr(i + j * len, len);
+            if (dict.find(temp) != dict.end()) {
+                seen[temp]++;
+                if (seen[temp] > dict[temp]) break;
+            } else break;
+        }
+        if (j == nums) ans.push_back(i);
+    }
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
+    vector<string> words;
+    words.push_back("good");
+    words.push_back("word");
+    words.push_back("good");
+    words.push_back("best");
+    vector<int> ans = findSubstring("wordgoodgoodgoodbestword", words);
     return 0;
 }
