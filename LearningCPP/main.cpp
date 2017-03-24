@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <queue>
 
 using namespace std;
 
@@ -289,7 +290,7 @@ void AllRange(char *pszStr, int k, int m) {
 
 //17. Letter Combinations of a Phone Number
 vector<string> letterCombinations(string digits) {
-    string nums[]={"0","1","abc","def","ghi","jkl","mno","pqrs","uvw","xyz"};
+    string nums[]={"0","1","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
     vector<string> ans;
     long length = digits.length();
     for (int i = 0; i < length; i++) {
@@ -613,12 +614,40 @@ vector<int> findSubstring(string s, vector<string>& words) {
     return ans;
 }
 
+//31. Next Permutation
+void nextPermutation(vector<int>& nums) {
+    int size = (int)nums.size();
+    if (size < 2) return;
+    int i = size - 2, j;
+    while (i >= 0) {
+        if (nums[i] < nums[i + 1]) break;
+        i--;
+    }
+    if (i != -1) {
+        j = size - 1;
+        while (j > i) {
+            if (nums[j] > nums[i]) {
+                int temp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = temp;
+                break;
+            }
+            j--;
+        }
+    }
+    for (j = size - 1, i++; i < j; i++,j--) {
+        int temp;
+        temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+
 int main(int argc, const char * argv[]) {
-    vector<string> words;
-    words.push_back("good");
-    words.push_back("word");
-    words.push_back("good");
-    words.push_back("best");
-    vector<int> ans = findSubstring("wordgoodgoodgoodbestword", words);
+    vector<int> test;
+    test.push_back(1);
+    test.push_back(3);
+    test.push_back(2);
+    nextPermutation(test);
     return 0;
 }
