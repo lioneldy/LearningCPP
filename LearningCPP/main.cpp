@@ -10,6 +10,7 @@
 #include <vector>
 #include <unordered_map>
 #include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -643,11 +644,52 @@ void nextPermutation(vector<int>& nums) {
     }
 }
 
+//32. Longest Valid Parentheses (stack solution)
+int longestValidParentheses(string s) {
+    stack<int> stack;
+    int n = (int)s.length();
+    for (int i = 0; i < n; i++) {
+        if (s[i] == '(') stack.push(i);
+        else {
+            if (!stack.empty()) {
+                if (s[stack.top()] == '(') stack.pop();
+                else stack.push(i);
+            } else stack.push(i);
+        }
+    }
+    int maxLen = 0, i = n;
+    if (stack.empty()) return n;
+    while (!stack.empty()) {
+        int j = stack.top();
+        stack.pop();
+        maxLen = max(i - j - 1, maxLen);
+        i = j;
+    }
+    maxLen = max(maxLen, i);
+    return maxLen;
+}
+//DP solution
+int longestValidParenthesesByDp(string s) {
+    int len = (int)s.length();
+    if (len < 2) return 0;
+    vector<int> longest(len, 0);
+    int maxLen = 0;
+    for (int i = 1; i < len; i++) {
+        if (s[i] == ')') {
+            if (s[i - 1] == '(') {
+                longest[i] = (i - 2) >= 0 ? longest[i - 2] + 2 : 2;
+            } else {
+                if (i - longest[i - 1] >= 0 && s[i - longest[i - 1] - 1] == '(') {
+                    longest[i] = longest[i - 1] + ((i - longest[i - 1] - 2 >= 0) ? longest[i - longest[i - 1] - 2] : 0) + 2;
+                }
+            }
+            maxLen = longest[i] > maxLen ? longest[i] : maxLen;
+        }
+    }
+    return maxLen;
+}
+
 int main(int argc, const char * argv[]) {
-    vector<int> test;
-    test.push_back(1);
-    test.push_back(3);
-    test.push_back(2);
-    nextPermutation(test);
+    longestValidParenthesesByDp("()(())");
     return 0;
 }
