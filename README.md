@@ -77,7 +77,7 @@ Reverse digits of an integer.
 
 #### 思路：
 
-直接翻转，用一个循环即可得到翻转后的数字，需要注意的是传入值和返回值都是int型，但是int型翻转后可能会越界，如果越界即大于INT_MAX或小于INT_MIN时返回0即可。
+直接翻转，用一个循环即可得到翻转后的数字，需要注意的是传入值和返回值都是int型，但是int型翻转后可能会越界，如果越界即大于INT\_MAX或小于INT\_MIN时返回0即可。
 
 ## 9. Palindrome Number
 
@@ -114,12 +114,17 @@ Implement regular expression matching with support for '.' and '*'.
 
 #### 思路：
 
-	这个题首先得明白题目的意思，','是可以匹配任意的一个字符，而'*'可以匹配0个或者多个它前面的元素。
-	我们来看看几个比较难以理解的例子：
+这个题首先得明白题目的意思，','是可以匹配任意的一个字符，而'\*'可以匹配0个或者多个它前面的元素。
+	
+我们来看看几个比较难以理解的例子：
+	
 	isMatch("aaabc",".*") → true
-	这里匹配，因为右边的字符串可以看做是"....."(".*"此时表示匹配5个'.'，而每个'.'可以匹配任意字符)。
+	
+这里匹配，因为右边的字符串可以看做是"....." (".\*"此时表示匹配5个'.'，而每个'.'可以匹配任意字符)。
+	
 	isMatch("aab", "c*a*b") → true
-	这里"c*"表示匹配0个'c'，"*a"表示匹配2个'a'，因此也是匹配的。
+	
+这里"c\*"表示匹配0个'c'，"\*a"表示匹配2个'a'，因此也是匹配的。
 
 明白这几个例子的例子后我们再来看，这个题其实只要把'*'出现作为一种特殊情况就可以了，大体思路是利用递归，只要第一个字符匹配，并且截去第一个字符后剩下的字符串也匹配，那么整个字符串就是匹配的。
 
@@ -465,3 +470,87 @@ If it is overflow, return MAX_INT.
 但是这样做的话会超时，这里我想到的是利用位运算来降低复杂度。比如15除以3，先将3(11)左移一位得到6(110)，15>6，继续左移，12(1100)依然比15小，此时再左移24就比15大了，所以不再左移，此时左移了两位，那么商就是1<<2 = 100(4)，剩下15 - 12 = 3继续算，循环条件也是当被除数的绝对值小于除数绝对值时停止循环。
 
 最后，溢出时需要返回MAX_INT，而此题溢出的情况只有两种，一是除数为0的时候，二是被除数为MIN_INT，除数为-1的时候。
+
+## 30. Substring with Concatenation of All Words
+
+You are given a string, **s**, and a list of words, **words**, that are all of the same length. Find all starting indices of substring(s) in **s** that is a concatenation of each word in **words** exactly once and without any intervening characters.
+
+For example, given:
+
+**s**: `"barfoothefoobarman"`
+
+**words**: `["foo", "bar"]`
+
+You should return the indices: `[0,9]`.
+
+(order does not matter).
+
+#### 审题
+
+**words**里面有若干个等长字符串，如果这些字符串以任意顺序拼接起来的字符串是**s**的子串，那么返回**s**中子串首字符的下标。
+
+#### 思路
+
+1. 用一个`unordered_map<string, int> dict`来存储**words**里面的字符串，以字符串为关键词，出现次数为值
+2. 遍历字符串**s**，用另一个`unordered_map<string, int> seen`来储存以下标`i`开头的子串每截取`len`（**words**里面的字符串等长len）的字符串`temp`所出现的次数，如果`seen[temp] > dict[temp]`说明`temp`未出现在`dict`中或者出现次数超过了`dict`中的次数，扫描下一个子串
+3. 如果截取了`nums`（**words**中字符串个数）个子串均满足条件，则说明当前以`i`为下标的子串满足题设，存入vector中
+4. 返回vector
+
+## 31. Next Permutation
+
+Implement next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.
+
+If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order).
+
+The replacement must be in-place, do not allocate extra memory.
+
+Here are some examples. Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
+
+`1,2,3` → `1,3,2`
+
+`3,2,1` → `1,2,3`
+
+`1,1,5` → `1,5,1`
+
+#### 审题
+
+给一个数组，数组中的数字连在一起组成一个数，调整这个数中每个数字的位置，返回一个刚好比之大一点的数，比如`1,3,2`返回的应该是`2,1,3`而不是`2,3,1`或者别的。需要注意的一点是不能使用额外的储存空间。
+
+#### 思路
+
+以`1,3,2`为例：
+
+1. 从后向前遍历数组，找到第一个下标为**k**的数，使之满足`nums[k] < nums[k+1]`，在该例子中`k = 0`；
+2. 从后向前遍历数组，到k为止，找到第一个下标为**l**的数，使之满足`nums[k] < nums[l]`，并交换`nums[k]`与`nums[l]`，此题中`l = 2`，交换后的数组为`2,3,1`；
+3. 逆置k+1到最后的数组，得到最后的结果`2,1,3`。
+
+## 32. Longest Valid Parentheses
+
+Given a string containing just the characters `'('` and `')'`, find the length of the longest valid (well-formed) parentheses substring.
+
+For `"(()"`, the longest valid parentheses substring is `"()"`, which has length = 2.
+
+Another example is `")()())"`, where the longest valid parentheses substring is `"()()"`, which has length = 4.
+
+##### 审题
+
+给一个由左右圆括号构成的字符串，返回有效的括号对的最大长度，比如`"((()))"`、`"()(())"`、`"()()()"`均为长度为6的有效括号对。
+
+#### 思路1
+
+利用DP来解决：
+
+1. 用一个数组`longest[i]`表示以下标`i`结尾的有效括号对的长度，如果`s[i]`是`'('`,则`longest[i]`一定等于0；
+2. 初始化`longest[0] = 0`，如果字符串长度小于2则返回0，然后从`i = 1`开始遍历字符串**s**
+	- 如果`s[i] == '('`，那么`longest[i] = 0`，因为没有以`'('`结尾的有效括号对 
+	- 如果`s[i] == ')'`
+		- 如果`s[i - 1] == '('`，那么`longest[i] = (i - 2 >= 0) ? (longest[i - 2] + 2) : 2`
+		- 如果`s[i - 1] == ')'`，例如, 输入 `"()(())"`, 当`i = 5`时，longest数组为[0,2,0,0,2,0], `longest[5] = longest[4] + 2 + longest[1] = 6`.
+
+#### 思路2
+
+利用栈来解决：
+
+1. 遍历字符串，如果`s[i] == '('`，则将`i`推入栈；
+2. 如果`s[i] == ')'`并且`s[stack.top()] == '('`，则将栈顶推出，否则不匹配，将`i`推入栈；
+3. 遍历完后，栈中剩下的就是未匹配的括号的下标，依次出栈，计算间隔最大的距离，即为最长有效括号对的长度。
