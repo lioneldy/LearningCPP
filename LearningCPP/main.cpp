@@ -689,7 +689,30 @@ int longestValidParenthesesByDp(string s) {
     return maxLen;
 }
 
+//61. Rotate List
+ListNode* rotateRight(ListNode* head, int k) {
+    ListNode *p = head, *q = head;
+    int n = 0;
+    while (p != nullptr) {
+        p = p->next;
+        n++;
+    }
+    p = head;
+    k %= n;
+    while (k--) {
+        p = p->next;
+    }
+    while (p->next != nullptr) {
+        p = p->next;
+        q = q->next;
+    }
+    p->next = head;
+    head = q->next;
+    q->next = nullptr;
+    return head;
+}
+
 int main(int argc, const char * argv[]) {
-    longestValidParenthesesByDp("()(())");
+    
     return 0;
 }
