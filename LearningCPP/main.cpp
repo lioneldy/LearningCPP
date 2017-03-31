@@ -712,6 +712,41 @@ ListNode* rotateRight(ListNode* head, int k) {
     return head;
 }
 
+//83. Remove Duplicates from Sorted List
+ListNode* deleteDuplicates(ListNode* head) {
+    ListNode *q = head;
+    if (head == nullptr) return head;
+    ListNode *p = head->next;
+    while (p != nullptr) {
+        if (p != nullptr && p->val == q->val) q->next = p->next;
+        else q = q->next;
+        p = p->next;
+    }
+    return head;
+}
+
+//82. Remove Duplicates from Sorted List II
+ListNode* deleteDuplicatesII(ListNode* head) {
+    if (head == nullptr) return head;
+    ListNode *q, *p = head->next;
+    ListNode preHead = ListNode(0);
+    preHead.next = head;
+    q = &preHead;
+    while (p != nullptr) {
+        if (p->val != q->next->val) {
+            q = q->next;
+        } else {
+            while (p->val == q->next->val && p->next != nullptr) {
+                p = p->next;
+            }
+            if (p->val == q->next->val && p->next == nullptr) q->next = p->next;
+            else q->next = p;
+        }
+        p = p->next;
+    }
+    return preHead.next;
+}
+
 int main(int argc, const char * argv[]) {
     
     return 0;
