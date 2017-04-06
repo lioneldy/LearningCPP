@@ -747,6 +747,61 @@ ListNode* deleteDuplicatesII(ListNode* head) {
     return preHead.next;
 }
 
+//86. Partition List 
+ListNode* partition(ListNode* head, int x) {
+    if (head == nullptr || head->next == nullptr) {
+        return head;
+    }
+    ListNode preHead(0);
+    preHead.next = head;
+    ListNode *p = &preHead, *q = head, *r = &preHead;
+    while (q != nullptr) {
+        if (q->val >= x) {
+            q = q->next;
+            r = p->next;
+            break;
+        }
+        q = q->next;
+        p = p->next;
+    }
+    while (q != nullptr) {
+        if (q->val < x) {
+            r->next = q->next;
+            q->next = p->next;
+            p->next = q;
+            q = r->next;
+            p = p->next;
+        } else {
+            q = q->next;
+            r = r->next;
+        }
+    }
+    return preHead.next;
+}
+
+//92. Reverse Linked List II 
+ListNode* reverseBetween(ListNode* head, int m, int n) {
+    if (head == nullptr || head->next == nullptr || m == n) {
+        return head;
+    }
+    ListNode preHead(0);
+    preHead.next = head;
+    ListNode *pre = &preHead, *p, *q;
+    n -= m;
+    while (m-- > 1) {
+        pre = pre->next;
+    }
+    p = pre->next;
+    q = p->next;
+    while (n--) {
+        p->next = q->next;
+        q->next = pre->next;
+        pre->next = q;
+        q = p->next;
+    }
+    return preHead.next;
+}
+
 int main(int argc, const char * argv[]) {
     
     return 0;
