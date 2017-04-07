@@ -554,3 +554,112 @@ Another example is `")()())"`, where the longest valid parentheses substring is 
 1. 遍历字符串，如果`s[i] == '('`，则将`i`推入栈；
 2. 如果`s[i] == ')'`并且`s[stack.top()] == '('`，则将栈顶推出，否则不匹配，将`i`推入栈；
 3. 遍历完后，栈中剩下的就是未匹配的括号的下标，依次出栈，计算间隔最大的距离，即为最长有效括号对的长度。
+
+## 61. Rotate List
+
+Given a list, rotate the list to the right by k places, where k is non-negative.
+
+For example:
+
+Given `1->2->3->4->5->NULL` and `k = 2`,
+
+return `4->5->1->2->3->NULL`.
+
+#### 审题
+
+输入一个链表，和一个非负整数k，将链表最后一个节点放到表头，执行k次。
+
+#### 思路
+
+首先我们观察一下，当k等于链表长度时，正好将整个链表轮了一圈，等于没有进行旋转，所以我们先遍历一遍链表，得到链表长度n，令`k %= n`，这样k就小于n了，只需要将最后k个节点放到表头就可以了。
+
+具体实现：申请一个头结点preHead，指向链表的第一个节点，然后将指针p指向该头结点，将p往后移动k步，即得到需要开始旋转的节点的前序节点，接着将剩下节点依次插入到头结点即可。
+
+## 83. Remove Duplicates from Sorted List
+
+Given a sorted linked list, delete all duplicates such that each element appear only once.
+
+For example,
+
+Given `1->1->2`, return `1->2`.
+
+Given `1->1->2->3->3`, return `1->2->3`.
+
+#### 审题
+
+给一个链表，将其重复节点移除。
+
+#### 思路
+
+1. 如果`head == nullptr || head->next == nullptr`，肯定无重复，直接返回头结点
+2. p、q分别指向前两个结点，比较p和q结点的值
+	- 如果q结点不为空且值与p相同则删除q，q指向下一个结点继续比较；
+	- 如果不相等，则p、q同时后移一步
+3. 遍历完即删除结束
+
+## 82. Remove Duplicates from Sorted List II
+
+Given a sorted linked list, delete all nodes that have duplicate numbers, leaving only distinct numbers from the original list.
+
+For example,
+
+Given 1->2->3->3->4->4->5, return 1->2->5.
+
+Given 1->1->1->2->3, return 2->3.
+
+#### 审题
+
+这一题和上一题差不多，唯一的区别是，如果有重复的，所有重复结点均删除，而上一题会保留一个。
+
+#### 思路
+
+同上一题一致，不过比较的时候需要p指向待比较结点的前序节点，这样如果有重复才方便删除。
+
+## 86. Partition List
+
+Given a linked list and a value x, partition it such that all nodes less than x come before nodes greater than or equal to x.
+
+You should preserve the original relative order of the nodes in each of the two partitions.
+
+For example,
+
+Given `1->4->3->2->5->2` and `x = 3`,
+
+return `1->2->2->4->3->5`.
+
+#### 审题
+
+输入一个链表以及一个整数x，将链表中值比x小的结点都移到值大于等于x的结点前面，同时需要保持被移动结点的相对顺序与原始顺序一致。
+
+#### 思路
+
+1. 找到第一个值大于等于x的结点作为插入结点
+2. 遍历剩余链表，将值小于x的结点依次插入到插入结点的前面
+
+以题目中的例子为例：
+
+	初始：1->4->3->2(1)->5->2(2)
+	        |
+	     插入节点
+	第一次插入：1->2(1)->4->3->5->2(2)
+	第二次插入：1->2(1)->2(2)->4->3->5
+	遍历结束。
+
+## 92. Reverse Linked List II
+
+Reverse a linked list from position m to n. Do it in-place and in one-pass.
+
+For example:
+
+Given `1->2->3->4->5->NULL`, `m = 2` and `n = 4`,
+
+return `1->4->3->2->5->NULL`.
+
+#### 审题
+
+逆置第m个到第n个节点的子链表
+
+#### 思路
+
+1. 找到待逆置子链表的前序节点（注意链表问题申请一个头结点指向链表的第一个节点会极大地方便计算）
+2. 依次将待逆置子链表的结点插入到该前序结点后面，插入n-m+1次即实现逆置。
