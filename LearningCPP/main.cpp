@@ -20,6 +20,13 @@ struct ListNode {
          ListNode(int x) : val(x), next(NULL) {}
 };
 
+struct TreeNode {
+     int val;
+     TreeNode *left;
+     TreeNode *right;
+     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ };
+
 //2. Add Two Numbers
 ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
     ListNode *sumList = new ListNode(0);
@@ -802,7 +809,47 @@ ListNode* reverseBetween(ListNode* head, int m, int n) {
     return preHead.next;
 }
 
+//34. Search for a Range 
+vector<int> searchRange(vector<int>& nums, int target) {
+    vector<int> ans(2, -1);
+    int first = 0, end = (int)nums.size() - 1, mid = 0;
+    if (nums.empty()) return ans;
+    while (first <= end) {
+        mid = (first + end) / 2;
+        if (nums[mid] > target) {
+            end = mid - 1;
+        } else if (nums[mid] < target) {
+            first = mid + 1;
+        } else break;
+    }
+    if (nums[mid] == target) {
+        first = mid;
+        end = mid;
+        while (nums[first] == target && first >= 0) first--;
+        while (nums[end] == target && end < nums.size()) end++;
+        ans[0] = first + 1;
+        ans[1] = end - 1;
+    }
+    return ans;
+}
+
+//35. Search Insert Position 
+int searchInsert(vector<int>& nums, int target) {
+    int i = 0;
+    for(; i < nums.size(); i++){
+        if(nums[i] >= target) break;
+    }
+    return i;
+}
+
 int main(int argc, const char * argv[]) {
-    
+    vector<int> nums;
+    nums.push_back(5);
+    nums.push_back(7);
+    nums.push_back(7);
+    nums.push_back(8);
+    nums.push_back(8);
+    nums.push_back(10);
+    vector<int> ans = searchRange(nums, 8);
     return 0;
 }
