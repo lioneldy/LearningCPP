@@ -842,14 +842,25 @@ int searchInsert(vector<int>& nums, int target) {
     return i;
 }
 
+//36. Valid Sudoku 
+bool isValidSudoku(vector<vector<char>>& board) {
+    int a[10][10] = {0}, b[10][10] = {0}, c[10][10] = {0};
+    for(int i = 0; i < board.size(); i++){
+        for(int j = 0; j < board[i].size(); j++){
+            if(board[i][j] == '.') continue;
+            else {
+                int k = board[i][j] - '0';
+                a[i][k]++;
+                b[k][j]++;
+                int tmp = i/3 + (j/3) * 3;
+                c[tmp][k]++;
+                if(a[i][k] > 1 || b[k][j] > 1 || c[tmp][k] > 1) return false;
+            }
+        }
+    }
+    return true;
+}
+
 int main(int argc, const char * argv[]) {
-    vector<int> nums;
-    nums.push_back(5);
-    nums.push_back(7);
-    nums.push_back(7);
-    nums.push_back(8);
-    nums.push_back(8);
-    nums.push_back(10);
-    vector<int> ans = searchRange(nums, 8);
     return 0;
 }
