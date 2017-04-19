@@ -861,6 +861,32 @@ bool isValidSudoku(vector<vector<char>>& board) {
     return true;
 }
 
+//38. Count and Say
+string countAndSay(int n) {
+    if(n == 0) return "";
+    string ans = "1";
+    if (n == 1) {
+        return ans;
+    }
+    for(int i = 1; i < n; i++) {
+        string res = "";
+        int count = 1;
+        char tmp = ans[0];
+        for(int j = 1; j < ans.length(); j++) {
+            if(ans[j] == tmp) count++;
+            else {
+                res = res + to_string(count) + tmp;
+                count = 1;
+                tmp = ans[j];
+            }
+        }
+        res = res + to_string(count) + tmp;
+        ans = res;
+    }
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
+    cout<<countAndSay(2);
     return 0;
 }
