@@ -886,7 +886,33 @@ string countAndSay(int n) {
     return ans;
 }
 
+//39. Combination Sum
+void combinationSum2(vector<vector<int>>& ans, vector<int>& res, vector<int>& candidates, int target, int begin, int n) {
+    if (!target) {
+        ans.push_back(res);
+        return;
+    }
+    for (int i = begin; i < n && target >= candidates[i]; i++) {
+        res.push_back(candidates[i]);
+        combinationSum2(ans, res, candidates, target - candidates[i], i, n);
+        res.pop_back();
+    }
+}
+vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+    vector<vector<int>> ans;
+    int n = (int)candidates.size();
+    vector<int> res;
+    sort(candidates.begin(), candidates.end());
+    combinationSum2(ans, res, candidates, target, 0, n);
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
-    cout<<countAndSay(2);
+    vector<int> candidates;
+    candidates.push_back(8);
+    candidates.push_back(4);
+    candidates.push_back(7);
+    candidates.push_back(3);
+    vector<vector<int>> ans = combinationSum(candidates, 7);
     return 0;
 }
