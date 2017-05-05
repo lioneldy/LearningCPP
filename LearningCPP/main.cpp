@@ -263,7 +263,7 @@ int threeSumClosest(vector<int>& nums, int target) {
 
 //最大公约数
 int gcd(int a, int b) {
-    return (a%b==0) ? b : gcd(b,a%b);
+    return (a % b == 0) ? b : gcd(b, a % b);
 }
 
 //全排列算法
@@ -908,11 +908,6 @@ vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
 }
 
 int main(int argc, const char * argv[]) {
-    vector<int> candidates;
-    candidates.push_back(8);
-    candidates.push_back(4);
-    candidates.push_back(7);
-    candidates.push_back(3);
-    vector<vector<int>> ans = combinationSum(candidates, 7);
+    cout<<gcd(-24, 60);
     return 0;
 }
