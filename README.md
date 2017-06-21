@@ -555,6 +555,63 @@ Another example is `")()())"`, where the longest valid parentheses substring is 
 2. 如果`s[i] == ')'`并且`s[stack.top()] == '('`，则将栈顶推出，否则不匹配，将`i`推入栈；
 3. 遍历完后，栈中剩下的就是未匹配的括号的下标，依次出栈，计算间隔最大的距离，即为最长有效括号对的长度。
 
+## 33. Search in Rotated Sorted Array
+
+Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
+
+(i.e., `0 1 2 4 5 6 7` might become `4 5 6 7 0 1 2`).
+
+You are given a target value to search. If found in the array return its index, otherwise return -1.
+
+You may assume no duplicate exists in the array.
+
+#### 思路
+
+直接遍历，暴力破解即可。
+
+## 34. Search for a Range
+
+Given an array of integers sorted in ascending order, find the starting and ending position of a given target value.
+
+Your algorithm's runtime complexity must be in the order of O(log n).
+
+If the target is not found in the array, return [-1, -1].
+
+For example,
+
+Given `[5, 7, 7, 8, 8, 10]` and target value 8,
+
+return `[3, 4]`.
+
+#### 思路
+
+因为要求时间复杂度为O(log n)，所以不能直接遍历，采用二分法查找，找到目标数后往两头扩即可。
+
+## 39. Combination Sum
+
+Given a set of candidate numbers **C** (without duplicates) and a target number **T**, find all unique combinations in **C** where the candidate numbers sums to **T**.
+
+The same repeated number may be chosen from C unlimited number of times.
+
+Note:
+
+All numbers (including target) will be positive integers.
+
+The solution set must not contain duplicate combinations.
+
+For example, given candidate set `[2, 3, 6, 7]` and target 7,
+ 
+A solution set is: 
+	
+	[
+  		[7],
+  		[2, 2, 3]
+	]
+
+#### 思路
+
+
+
 ## 61. Rotate List
 
 Given a list, rotate the list to the right by k places, where k is non-negative.

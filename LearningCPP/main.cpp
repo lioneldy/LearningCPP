@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <queue>
 #include <stack>
+#include <set>
 
 using namespace std;
 
@@ -601,7 +602,7 @@ int divide(int dividend, int divisor) {
 }
 
 //30. Substring with Concatenation of All Words
-vector<int> findSubstring(string s, vector<string>& words) {
+vector<int> Substring(string s, vector<string>& words) {
     vector<int> ans;
     if (words.size() == 0 || s.size() == 0) return ans;
     unordered_map<string, int> dict;
@@ -887,14 +888,14 @@ string countAndSay(int n) {
 }
 
 //39. Combination Sum
-void combinationSum2(vector<vector<int>>& ans, vector<int>& res, vector<int>& candidates, int target, int begin, int n) {
+void combinationSumMethod(vector<vector<int>>& ans, vector<int>& res, vector<int>& candidates, int target, int begin, int n) {
     if (!target) {
         ans.push_back(res);
         return;
     }
     for (int i = begin; i < n && target >= candidates[i]; i++) {
         res.push_back(candidates[i]);
-        combinationSum2(ans, res, candidates, target - candidates[i], i, n);
+        combinationSumMethod(ans, res, candidates, target - candidates[i], i, n);
         res.pop_back();
     }
 }
@@ -903,7 +904,33 @@ vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
     int n = (int)candidates.size();
     vector<int> res;
     sort(candidates.begin(), candidates.end());
-    combinationSum2(ans, res, candidates, target, 0, n);
+    combinationSumMethod(ans, res, candidates, target, 0, n);
+    return ans;
+}
+
+//40. Combination Sum2
+void combinationSum2Method(set<vector<int>>& ans, vector<int>& res, vector<int>& candidates, int target, int begin, int n) {
+    if (!target) {
+        ans.insert(res);
+        return;
+    }
+    for (int i = begin; i < n && target >= candidates[i]; i++) {
+        res.push_back(candidates[i]);
+        combinationSum2Method(ans, res, candidates, target - candidates[i], i + 1, n);
+        res.pop_back();
+    }
+}
+vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+    set<vector<int>> tmp;
+    int n = (int)candidates.size();
+    vector<int> res;
+    sort(candidates.begin(), candidates.end());
+    combinationSum2Method(tmp, res, candidates, target, 0, n);
+    vector<vector<int>> ans;
+    set<vector<int>>::iterator it = tmp.begin();
+    for (; it!=tmp.end(); it++) {
+        ans.push_back(*it);
+    }
     return ans;
 }
 
