@@ -934,7 +934,41 @@ vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
     return ans;
 }
 
+//41. First Missing Positive
+int firstMissingPositive(vector<int>& nums) {
+    int n = (int)nums.size();
+    for (int i = 0; i < n; i++) {
+        while(nums[i] > 0 && nums[i] < n && nums[nums[i] - 1] != nums[i])
+            swap(nums[i], nums[nums[i] - 1]);
+    }
+    for (int i = 0; i < n; i++) {
+        if(nums[i] != i + 1) return i + 1;
+    }
+    return n + 1;
+}
+
+//42. Trapping Rain Water
+int trap(vector<int>& height) {
+    int ans = 0, left = 0, right = (int)height.size() - 1;
+    int lower = 0, level = 0;
+    while (left < right) {
+        lower = height[height[left] < height[right] ? left++ : right--];
+        level = max(lower, level);
+        ans += level - lower;
+    }
+    return ans;
+}
+
+//55. Jump Game
+bool canJump(vector<int>& nums) {
+    int n = (int)nums.size();
+    int i = 0, reach = 0;
+    for(; i < n && i <= reach; i++)
+        reach = max(i + nums[i], reach);
+    return i == n;
+}
+
 int main(int argc, const char * argv[]) {
-    cout<<gcd(-24, 60);
+
     return 0;
 }

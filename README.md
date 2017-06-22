@@ -609,8 +609,22 @@ A solution set is:
 	]
 
 #### 思路
+ 
+## 41. First Missing Positive
 
+Given an unsorted integer array, find the first missing positive integer.
 
+For example,
+
+Given `[1,2,0]` return 3,
+
+and `[3,4,-1,1]` return 2.
+
+Your algorithm should run in O(n) time and uses constant space.
+
+#### 思路
+
+由于空间与时间复杂度的要求，不能采用过于复杂的算法。这里我采用的算法是这样的，如果数组里的数是0-n范围内的，那就把它放到正确的位置上，比如数字`5`就放到`num[4]`处，z
 
 ## 61. Rotate List
 
