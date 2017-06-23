@@ -959,6 +959,22 @@ int trap(vector<int>& height) {
     return ans;
 }
 
+//43. Jump Game2
+int jump(vector<int>& nums) {
+    int n = (int)nums.size();
+    if(n <= 1) return 0;
+    int reach = 0, tmp = 0, cnt = 0, i = 0;
+    while (reach - i + 1 > 0) {
+        cnt++;
+        for(; i <= reach; i++){
+            tmp = max(tmp, nums[i] + i);
+            if(tmp >= n - 1) return cnt;
+        }
+        reach = tmp;
+    }
+    return cnt;
+}
+
 //55. Jump Game
 bool canJump(vector<int>& nums) {
     int n = (int)nums.size();
@@ -969,6 +985,9 @@ bool canJump(vector<int>& nums) {
 }
 
 int main(int argc, const char * argv[]) {
-
+    vector<int> nums;
+    nums.push_back(1);
+    nums.push_back(2);
+    cout<<jump(nums)<<endl;
     return 0;
 }
