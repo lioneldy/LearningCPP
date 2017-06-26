@@ -975,6 +975,21 @@ int jump(vector<int>& nums) {
     return cnt;
 }
 
+//48. Rotate Image
+void rotate(vector<vector<int>>& matrix) {
+    int n = (int)matrix.size();
+    for(int i = 0; i < n / 2; i ++) {
+        for(int j = 0; j < n; j ++) {
+            swap(matrix[i][j], matrix[n - i - 1][j]);
+        }
+    }
+    for(int i = 0; i < n; i ++) {
+        for(int j = i; j < n; j ++) {
+            swap(matrix[j][i], matrix[i][j]);
+        }
+    }
+}
+
 //55. Jump Game
 bool canJump(vector<int>& nums) {
     int n = (int)nums.size();
