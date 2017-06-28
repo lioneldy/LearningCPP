@@ -28,6 +28,13 @@ struct TreeNode {
      TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  };
 
+struct Interval {
+    int start;
+    int end;
+    Interval() : start(0), end(0) {}
+    Interval(int s, int e) : start(s), end(e) {}
+};
+
 //2. Add Two Numbers
 ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
     ListNode *sumList = new ListNode(0);
@@ -990,6 +997,23 @@ void rotate(vector<vector<int>>& matrix) {
     }
 }
 
+//53. Maximum Subarray
+
+int maxSubArray(vector<int>& nums) {
+    int maxSum = 0;
+    int tmp = 0;
+    for (int i = 0; i < nums.size(); i++) {
+        tmp += nums[i];
+        if (tmp > maxSum) {
+            maxSum = tmp;
+        }
+        if (tmp < 0) {
+            tmp = 0;
+        }
+    }
+    return maxSum;
+}
+
 //55. Jump Game
 bool canJump(vector<int>& nums) {
     int n = (int)nums.size();
@@ -999,10 +1023,98 @@ bool canJump(vector<int>& nums) {
     return i == n;
 }
 
+//54. Spiral Matrix
+vector<int> spiralOrder(vector<vector<int>>& matrix) {
+    vector<int> ans;
+    if (matrix.empty()) return ans;
+    int left = 0, top = 0;
+    int right = (int)matrix[0].size();
+    int bottom = (int)matrix.size();
+    while (left < right || top < bottom) {
+        if (top < bottom) {
+            for (int i = left; i < right; i++) {
+                ans.push_back(matrix[top][i]);
+            }
+            top++;
+        }
+        if (left < right) {
+            for (int j = top; j < bottom; j++) {
+                ans.push_back(matrix[j][right - 1]);
+            }
+            right--;
+        }
+        if (top < bottom) {
+            for (int i = right - 1; i >= left; i--) {
+                ans.push_back(matrix[bottom - 1][i]);
+            }
+            bottom--;
+        }
+        if (left < right) {
+            for (int j = bottom - 1; j >= top; j--) {
+                ans.push_back(matrix[j][left]);
+            }
+            left++;
+        }
+    }
+    return ans;
+}
+
+//56. Merge Intervals
+bool cmp(Interval a, Interval b) {
+    return a.start < b.start;
+}
+vector<Interval> merge(vector<Interval>& intervals) {
+    vector<Interval> ans;
+    sort(intervals.begin(), intervals.end(), cmp);
+    for (int i = 0; i < intervals.size(); i++) {
+        int s = intervals[i].start;
+        int e = intervals[i].end;
+        for (int j = i + 1; j < intervals.size(); j++) {
+            int tmp = intervals[j].start;
+            if (tmp > e) {
+                break;
+            } else {
+                if(e < intervals[j].end) e = intervals[j].end;
+                i++;
+            }
+        }
+        Interval a =  Interval(s, e);
+        ans.push_back(a);
+    }
+    return ans;
+}
+
+//59. Spiral Matrix II
+vector<vector<int>> generateMatrix(int n) {
+    int num = 1;
+    vector<vector<int>> ans(n, vector<int>(n));
+    int l = 0, u = 0, r = n - 1, d = n - 1;
+    while ((l <= r || u <= d) && num <= n * n) {
+        if (l <= r && num <= n * n) {
+            for (int i = l; i <= r; i++)
+                ans[u][i] = num++;
+            u++;
+        }
+        if (u <= d && num <= n * n) {
+            for (int i = u; i <= d; i++)
+                ans[i][r] = num++;
+            r--;
+        }
+        if (l <= r && num <= n * n) {
+            for (int i = r; i >= l; i--)
+                ans[d][i] = num++;
+            d--;
+        }
+        if (u <= d && num <= n * n) {
+            for (int i = d; i >= u; i--)
+                ans[i][l] = num++;
+            l++;
+        }
+    }
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
-    vector<int> nums;
-    nums.push_back(1);
-    nums.push_back(2);
-    cout<<jump(nums)<<endl;
+    vector<vector<int>>ans = generateMatrix(1);
     return 0;
 }
