@@ -1166,7 +1166,72 @@ int minPathSum(vector<vector<int>>& grid) {
     return grid[m - 1][n - 1];
 }
 
+//73. Set Matrix Zeroes
+void setZeroes(vector<vector<int>>& matrix) {
+    int m = (int)matrix.size();
+    int n = (int)matrix[0].size();
+    vector<bool> row(m, false);
+    vector<bool> col(n, false);
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++)
+            if (matrix[i][j] == 0) {
+                row[i] = true;
+                col[j] = true;
+            }
+    for (int i = 0; i < m; i++)
+        if (row[i]) {
+            for (int j = 0; j < n; j++)
+                matrix[i][j] = 0;
+        }
+    for (int j = 0; j < n; j++)
+        if (col[j]) {
+            for (int i = 0; i < m; i++)
+                matrix[i][j] = 0;
+        }
+}
+
+//74. Search a 2D Matrix
+bool searchMatrix(vector<vector<int>>& matrix, int target) {
+    if (matrix.empty() || matrix[0].empty()) return false;
+    int m = (int)matrix.size();
+    int n = (int)matrix[0].size();
+    int start = 0, end = m * n - 1;
+    while (start <= end) {
+        int mid = (start + end) / 2;
+        int i = mid / n, j = mid % n;
+        if (matrix[i][j] < target) start = mid + 1;
+        else if (matrix[i][j] > target) end = mid - 1;
+        else return true;
+    }
+    return false;
+}
+
+//75. Sort Colors
+void sortColors(vector<int>& nums) {
+    int n = (int)nums.size();
+    int i = 0, j = n - 1;
+    while (i < j) {
+        while (nums[i] == 2 && i < j) {
+            int tmp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = tmp;
+            j--;
+        }
+        i++;
+    }
+    i = 0;
+    while (i < j) {
+        while (nums[j] == 0 && i < j) {
+            int tmp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = tmp;
+            i++;
+        }
+        j--;
+    }
+}
+
 int main(int argc, const char * argv[]) {
-    vector<vector<int>>ans = generateMatrix(1);
+    
     return 0;
 }
