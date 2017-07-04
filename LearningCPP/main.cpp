@@ -1231,7 +1231,29 @@ void sortColors(vector<int>& nums) {
     }
 }
 
+//78. Subsets
+void getSubsets(vector<int>& sub, vector<vector<int>>& subs, vector<int>& nums, int n) {
+    subs.push_back(sub);
+    for (int i = n; i < nums.size(); i++) {
+        sub.push_back(nums[i]);
+        getSubsets(sub, subs, nums, i + 1);
+        sub.pop_back();
+    }
+    return;
+}
+vector<vector<int>> subsets(vector<int>& nums) {
+    sort(nums.begin(), nums.end());
+    vector<vector<int>> ans;
+    vector<int> sub;
+    getSubsets(sub, ans, nums, 0);
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
-    
+    vector<int> nums;
+    nums.push_back(1);
+    nums.push_back(2);
+    nums.push_back(3);
+    vector<vector<int>> ans = subsets(nums);
     return 0;
 }
