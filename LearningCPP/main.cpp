@@ -1249,6 +1249,47 @@ vector<vector<int>> subsets(vector<int>& nums) {
     return ans;
 }
 
+//79. Word Search
+bool isFound(vector<vector<char>>& board, const char* w, int i, int j) {
+    int m = (int)board.size();
+    int n = (int)board[0].size();
+    if (i < 0 || j < 0 || i >= m || j >= n || board[i][j] == '\0' || board[i][j] != *w) {
+        return false;
+    }
+    if (*(w + 1) == '\0') return true;
+    char t = board[i][j];
+    board[i][j] = '\0';
+    if (isFound(board, w + 1, i + 1, j) || isFound(board, w + 1, i - 1, j) || isFound(board, w + 1, i, j + 1) || isFound(board, w + 1, i, j - 1)) {
+        return true;
+    }
+    board[i][j] = t;
+    return false;
+}
+bool exist(vector<vector<char>>& board, string word) {
+    if (board.empty()) {
+        return false;
+    }
+    int m = (int)board.size();
+    int n = (int)board[0].size();
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (isFound(board, word.c_str(), i, j)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+//80. Remove Duplicates from Sorted Array II
+int removeDuplicates2(vector<int>& nums) {
+    int i = 0;
+    for (int n : nums)
+        if (i < 2 || n > nums[i-2])
+            nums[i++] = n;
+    return i;
+}
+
 int main(int argc, const char * argv[]) {
     vector<int> nums;
     nums.push_back(1);
