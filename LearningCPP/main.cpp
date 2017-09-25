@@ -1290,11 +1290,27 @@ int removeDuplicates2(vector<int>& nums) {
     return i;
 }
 
+//44. Wildcard Matching
+bool isMatch2(string s, string p) {
+    int m = (int)s.length(), n = (int)p.length();
+    int i = 0, j = 0, star = -1, match = 0;
+    while (i < m) {
+        if (j < n && (s[i] == p[j] || p[j] == '?')) {
+            i++;
+            j++;
+        } else if (j < n && p[j] == '*') {
+            star = j++;
+            match = i;
+        } else if (star >= 0) {
+            i = ++match;
+            j = star + 1;
+        } else return false;
+    }
+    while (j < n && p[j] == '*') j++;
+    return j == n;
+}
+
 int main(int argc, const char * argv[]) {
-    vector<int> nums;
-    nums.push_back(1);
-    nums.push_back(2);
-    nums.push_back(3);
-    vector<vector<int>> ans = subsets(nums);
+    isMatch2("zacabz", "*a?b*");
     return 0;
 }
