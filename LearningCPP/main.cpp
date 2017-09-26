@@ -1310,7 +1310,41 @@ bool isMatch2(string s, string p) {
     return j == n;
 }
 
+//70. Climbing Stairs
+int climbStairs(int n) {
+    vector<int> ans(n + 1, 0);
+    ans[0] = 1;
+    ans[1] = 1;
+    for (int i = 2; i <= n; i++) {
+        ans[i] = ans[i - 1] + ans[i - 2];
+    }
+    return ans[n];
+}
+
+//72. Edit Distance
+int minDistance(string word1, string word2) {
+    int m = (int)word1.length();
+    int n = (int)word2.length();
+    vector<vector<int>> dp(m + 1, vector<int> (n + 1, 0));
+    for (int i = 1; i <= m; i++) {
+        dp[i][0] = i;
+    }
+    for (int j = 1; j <= n; j++) {
+        dp[0][j] = j;
+    }
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (word1[i - 1] == word2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = min(dp[i - 1][j - 1] + 1, min(dp[i - 1][j] + 1, dp[i][j - 1] + 1));
+            }
+        }
+    }
+    return dp[m][n];
+}
+
 int main(int argc, const char * argv[]) {
-    isMatch2("zacabz", "*a?b*");
+    minDistance("a", "b");
     return 0;
 }
