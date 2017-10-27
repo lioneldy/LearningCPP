@@ -1344,7 +1344,47 @@ int minDistance(string word1, string word2) {
     return dp[m][n];
 }
 
+//43. Multiply Strings
+string multiply(string num1, string num2) {
+    string sum(num1.length() + num2.length(), '0');
+    for (int i = (int)num2.length() - 1; i >= 0; i--) {
+        int carry = 0;
+        for (int j = (int)num1.length() - 1; j >= 0; j--) {
+            int tmp = (num2[i] - '0') * (num1[j] - '0') + carry + (sum[i + j + 1] - '0');
+            sum[i + j + 1] = tmp % 10 + '0';
+            carry = tmp / 10;
+        }
+        sum[i] += carry;
+    }
+    size_t startp = sum.find_first_not_of('0');
+    if (string::npos != startp) {
+        return sum.substr(startp);
+    }
+    return "0";
+}
+
+//46. Permutations
+void permutations(vector<vector<int>> &res, vector<int> &nums, int k, int m) {
+    if (k == m) {
+        res.push_back(nums);
+    } else {
+        for (int i = k; i <= m; i++) {
+            if (nums[k] != nums[i]) {
+                swap(nums[k], nums[i]);
+                permutations(res, nums, k + 1, m);
+                swap(nums[k], nums[i]);
+            }
+        }
+    }
+}
+vector<vector<int>> permute(vector<int>& nums) {
+    vector<vector<int>> res;
+    int m = (int)nums.size();
+    permutations(res, nums, 0, m - 1);
+    return res;
+}
+
 int main(int argc, const char * argv[]) {
-    minDistance("a", "b");
+    cout<<multiply("8", "11")<<endl;
     return 0;
 }
