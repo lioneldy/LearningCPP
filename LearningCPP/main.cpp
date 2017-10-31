@@ -1459,6 +1459,20 @@ vector<vector<string>> solveNQueens(int n) {
     return ans;
 }
 
+//58. Length of Last Word
+int lengthOfLastWord(string s) {
+    int len = 0, i = (int)s.size() - 1;
+    while (s[i] == ' ') {
+        i--;
+    }
+    for (; i >= 0; i--) {
+        if (s[i] == ' ') {
+            break;
+        } else len++;
+    }
+    return len;
+}
+
 int main(int argc, const char * argv[]) {
     vector<vector<string>> ans = solveNQueens(4);
     return 0;
