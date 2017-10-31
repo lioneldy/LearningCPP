@@ -16,16 +16,16 @@
 using namespace std;
 
 struct ListNode {
-         int val;
-         ListNode *next;
-         ListNode(int x) : val(x), next(NULL) {}
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
 };
 
 struct TreeNode {
-     int val;
-     TreeNode *left;
-     TreeNode *right;
-     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  };
 
 struct Interval {
@@ -1384,7 +1384,82 @@ vector<vector<int>> permute(vector<int>& nums) {
     return res;
 }
 
+//49. Group Anagrams
+vector<vector<string>> groupAnagrams(vector<string>& strs) {
+    unordered_map<string, multiset<string>> mp;
+    vector<vector<string>> res;
+    for (string s : strs) {
+        string t = s;
+        sort(t.begin(), t.end());
+        mp[t].insert(s);
+    }
+    for (auto m : mp) {
+        vector<string> ans(m.second.begin(), m.second.end());
+        res.push_back(ans);
+    }
+    return res;
+}
+
+//50. Pow(x, n)
+double myPow(double x, int n) {
+    if (n == 0) {
+        return 1;
+    }
+    if (n < 0) {
+        if (n == -1) {
+            return 1 / x;
+        } else {
+            x = 1 / x;
+            return x * myPow(x, -1 - n);
+        }
+    }
+    if (n % 2 == 0) {
+        return myPow(x * x, n / 2);
+    } else return x * myPow(x * x, (n - 1) / 2);
+}
+
+//51. N-Queens
+bool isNQueensValid(vector<string> res, int row, int col, int n) {
+    for (int i = row; i >= 0; i--) {
+        if (res[i][col] == 'Q') {
+            return false;
+        }
+    }
+    for (int i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+        if (res[i][j] == 'Q') {
+            return false;
+        }
+    }
+    for (int i = row, j = col; i >= 0 && j < n; i--, j++) {
+        if (res[i][j] == 'Q') {
+            return false;
+        }
+    }
+    return true;
+}
+
+void solveNQueens(vector<vector<string>> &ans, vector<string> &res, int row, int n) {
+    if (row == n) {
+        ans.push_back(res);
+        return;
+    }
+    for (int i = 0; i < n; i++) {
+        if (isNQueensValid(res, row, i, n)) {
+            res[row][i] = 'Q';
+            solveNQueens(ans, res, row + 1, n);
+            res[row][i] = '.';
+        }
+    }
+}
+
+vector<vector<string>> solveNQueens(int n) {
+    vector<vector<string>> ans;
+    vector<string> res(n, string(n, '.'));
+    solveNQueens(ans, res, 0, n);
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
-    cout<<multiply("8", "11")<<endl;
+    vector<vector<string>> ans = solveNQueens(4);
     return 0;
 }
