@@ -306,7 +306,7 @@ void AllRange(char *pszStr, int k, int m) {
 
 //17. Letter Combinations of a Phone Number
 vector<string> letterCombinations(string digits) {
-    string nums[]={"0","1","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+    string nums[] = {"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
     vector<string> ans;
     long length = digits.length();
     for (int i = 0; i < length; i++) {
@@ -1473,7 +1473,43 @@ int lengthOfLastWord(string s) {
     return len;
 }
 
+//60. Permutation Sequence
+string getPermutation(int n, int k) {
+    vector<string> nums = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+    string res = "";
+    vector<int> pNums(n + 1, 1);
+    for (int i = 1; i <= n; i++) {
+        pNums[i] = pNums[i - 1] * i;
+    }
+    k--;
+    while (n--) {
+        int index = k / pNums[n];
+        res = res + nums[index];
+        nums.erase(nums.begin() + index);
+        k -= index * pNums[n];
+    }
+    return res;
+}
+
+//67. Add Binary
+string addBinary(string a, string b) {
+    string res = "";
+    int c = 0;
+    int i = (int)a.size(), j = (int)b.size();
+    while (i || j || c) {
+        int x = i > 0 ? (a[--i] - '0') : 0;
+        int y = j > 0 ? (b[--j] - '0') : 0;
+        int tmp = x + y + c;
+        if (tmp > 1) {
+            tmp -= 2;
+            c = 1;
+        } else c = 0;
+        res = to_string(tmp) + res;
+    }
+    return res;
+}
+
 int main(int argc, const char * argv[]) {
-    vector<vector<string>> ans = solveNQueens(4);
+    string s = addBinary("1", "1");
     return 0;
 }
