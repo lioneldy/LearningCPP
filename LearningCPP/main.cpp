@@ -1509,6 +1509,36 @@ string addBinary(string a, string b) {
     return res;
 }
 
+//69. Sqrt(x)
+int mySqrt(int x) {
+    long long r = x;
+    while (r * r > x)
+        r = (r + x / r) / 2;
+    return (int)r;
+}
+
+//76. Minimum Window Substring
+string minWindow(string s, string t) {
+    vector<int> map(128, 0);
+    for (auto c : t) map[c]++;
+    int counter = (int)t.length(), begin = 0, end = 0, d = INT_MAX, head = 0;
+    while (end < s.length()) {
+        if (map[s[end++]]-- > 0) {
+            counter--;
+        }
+        while (counter == 0) {
+            if (end - begin < d) {
+                d = end - begin;
+                head = begin;
+            }
+            if (map[s[begin++]]++ == 0) {
+                counter++;
+            }
+        }
+    }
+    return d == INT_MAX ? "" : s.substr(head, d);
+}
+
 int main(int argc, const char * argv[]) {
     string s = addBinary("1", "1");
     return 0;
