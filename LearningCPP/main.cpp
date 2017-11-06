@@ -1539,7 +1539,41 @@ string minWindow(string s, string t) {
     return d == INT_MAX ? "" : s.substr(head, d);
 }
 
+//77. Combinations
+void combinations(vector<vector<int>> &res, vector<int> &ans, int k, int n, int begin, int count) {
+    if (count == k) {
+        res.push_back(ans);
+        return;
+    }
+    for (int i = begin; i <= n; i++) {
+        ans.push_back(i);
+        combinations(res, ans, k, n, i + 1, count + 1);
+        ans.pop_back();
+    }
+}
+vector<vector<int>> combine(int n, int k) {
+    vector<vector<int>> res;
+    vector<int> ans;
+    combinations(res, ans, k, n, 1, 0);
+    return res;
+}
+vector<vector<int>> combine2(int n, int k) {
+    vector<vector<int>> res;
+    vector<int> temp(k, 0);
+    int i = 0;
+    while (i >= 0) {
+        temp[i]++;
+        if (temp[i] > n) i--;
+        else if (i == k - 1) res.push_back(temp);
+        else {
+            i++;
+            temp[i] = temp[i - 1];
+        }
+    }
+    return res;
+}
+
 int main(int argc, const char * argv[]) {
-    string s = addBinary("1", "1");
+
     return 0;
 }
