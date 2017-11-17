@@ -735,3 +735,525 @@ return `1->4->3->2->5->NULL`.
 1. 找到待逆置子链表的前序节点（注意链表问题申请一个头结点指向链表的第一个节点会极大地方便计算）
 2. 依次将待逆置子链表的结点插入到该前序结点后面，插入n-m+1次即实现逆置。
 
+## 42 Trapping Rain Water
+
+Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.
+
+For example, 
+Given [0,1,0,2,1,0,1,3,2,1,2,1], return 6.
+
+#### 审题
+
+题目大意为给一个数组保存障碍物高度，求这一系列障碍物下雨后能蓄水多少。
+
+#### 思路
+
+只遍历一次，分别俩指针`left`和`right`从两侧向中间遍历，用`level`储存两侧的可蓄水高度，只要低于这个高度就能蓄水，`lower`储存当前指针所指障碍物的高度，如果低于`level`蓄水量就增加，高于`level`就更新`level`的值。
+
+## 55. Jump Game
+
+Given an array of non-negative integers, you are initially positioned at the first index of the array.
+
+Each element in the array represents your maximum jump length at that position.
+
+Determine if you are able to reach the last index.
+
+For example:
+A = `[2,3,1,1,4]`, return `true`.
+
+A = `[3,2,1,0,4]`, return `false`.
+
+#### 思路
+
+用一个变量`reach`来存储可以到达的最远点，遍历数组A，当下标大于可到达的最远点或是抵达数组末端停止遍历，每次遍历更新`reach`的值，如果结束的时候下标等于数组长度则返回`true`。
+
+## 45. Jump Game II
+
+Given an array of non-negative integers, you are initially positioned at the first index of the array.
+
+Each element in the array represents your maximum jump length at that position.
+
+Your goal is to reach the last index in the minimum number of jumps.
+
+For example:
+Given array A = `[2,3,1,1,4]`
+
+The minimum number of jumps to reach the last index is 2. (Jump 1 step from index 0 to 1, then 3 steps to the last index.)
+
+**Note:**
+You can assume that you can always reach the last index.
+
+#### 审题
+
+和55题不同的是题目确定可以抵达数组末端，现在需要求到达数组末端的最小跳跃次数。
+
+#### 思路
+
+需要的变量及对应含义：
+
+- `i`：指针，指向遍历当前位置
+- `cnt`：当前步数，初始化为0
+- `tmp`：当前步数下能到达的最远点，若迭代过程中大于`n - 1`则结束迭代，返回此时的`cnt`
+- `reach`：上一步能达到的最远位置
+
+第`cnt`步能够到达`i`-`reach`之间的位置，`tmp`存储从`i`到`reach`能抵达的最远点，即第`cnt + 1`步能够到达的最远点，当`i`遍历至`reach`时更新`reach`的值为`tmp`。若遍历过程中`tmp > n - 1`即到达数组末端，返回此时的步数`cnt`。
+
+## 48. Rotate Image
+
+You are given an *n x n* 2D matrix representing an image.
+
+Rotate the image by 90 degrees (clockwise).
+
+**Note:**
+You have to rotate the image in-place, which means you have to modify the input 2D matrix directly. DO NOT allocate another 2D matrix and do the rotation.
+
+**Example 1:**
+
+	Given input matrix = 
+	[
+	  [1,2,3],
+	  [4,5,6],
+	  [7,8,9]
+	],
+	
+	rotate the input matrix in-place such that it becomes:
+	[
+	  [7,4,1],
+	  [8,5,2],
+	  [9,6,3]
+	]
+**Example 2:**
+
+	Given input matrix =
+	[
+	  [ 5, 1, 9,11],
+	  [ 2, 4, 8,10],
+	  [13, 3, 6, 7],
+	  [15,14,12,16]
+	], 
+	
+	rotate the input matrix in-place such that it becomes:
+	[
+	  [15,13, 2, 5],
+	  [14, 3, 4, 1],
+	  [12, 6, 8, 9],
+	  [16, 7,10,11]
+	]
+
+#### 审题
+
+从两个例子来看，目标就是把输入矩阵顺时针旋转90°，并且不能申请额外的二维矩阵来辅助旋转。
+
+#### 思路
+
+因为不能申请额外空间，所以只能直接在原矩阵上进行交换操作，假设矩阵的中心在坐标轴远点，那么先按x轴对称交换，再沿着x=-y的对角线进行对称交换，即可得到所求矩阵，例：
+
+	[
+		[1, 2],    =>    [3,4],    =>    [3,1],
+		[3, 4]           [1,2]           [4,2]
+	]
+
+## 53. Maximum Subarray
+
+Find the contiguous subarray within an array (containing at least one number) which has the largest sum.
+
+For example, given the array `[-2,1,-3,4,-1,2,1,-5,4]`,
+
+the contiguous subarray `[4,-1,2,1]` has the largest sum = `6`.
+
+#### 思路
+
+求和最大的子数组的最大和，如果一个子数组满足要求，那么它的前任意个数之和一定非负。用一个变量`tmp`储存当前子串的和，从头开始遍历，依次求和，若`tmp`大于`sum`就更新`sum`，如果`tmp`小于0，则将`tmp`置零，接着遍历，最后返回`sum`即为所求子数组的最大和。
+
+## 54. Spiral Matrix
+
+Given a matrix of m x n elements (m rows, n columns), return all elements of the matrix in spiral order.
+
+	For example,
+	Given the following matrix:
+	
+	[
+	 [ 1, 2, 3 ],
+	 [ 4, 5, 6 ],
+	 [ 7, 8, 9 ]
+	]
+
+You should return `[1,2,3,6,9,8,7,4,5]`.
+
+#### 思路
+
+直接解，无技巧。
+
+## 56. Merge Intervals
+
+Given a collection of intervals, merge all overlapping intervals.
+
+For example,
+
+Given `[1,3]`,`[2,6]`,`[8,10]`,`[15,18]`,
+
+return `[1,6]`,`[8,10]`,`[15,18]`.
+
+#### 审题
+
+需要将重叠部分合在一起，比如`[1, 3]`,`[2, 6]`合为`[1, 6]`。
+
+#### 思路
+
+将interval数组按第一个数从小到大排列，依次遍历，第一个interval的第一个数为s，然后往后找，当interval的第一个数大于前面几个interval的最大的第二个数时说明没有重叠，取这个最大的第二个数为e，将`[s, e]`放入新数组中，然后接着往后合并重叠部分，直至遍历完interval数组。
+
+## 59. Spiral Matrix II
+
+Given an integer n, generate a square matrix filled with elements from 1 to n2 in spiral order.
+
+For example,
+Given *n* = `3`,
+
+You should return the following matrix:
+
+	[
+	 [ 1, 2, 3 ],
+	 [ 8, 9, 4 ],
+	 [ 7, 6, 5 ]
+	]
+
+#### 思路
+
+同54题，无技巧。
+
+## 62. Unique Paths
+
+A robot is located at the top-left corner of a m x n grid (marked 'Start' in the diagram below).
+
+The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid (marked 'Finish' in the diagram below).
+
+How many possible unique paths are there?
+
+#### 审题
+
+一个机器人从网格的左上角，每次只能向右或者向下移动，问走到右下角有多少条不同的路径。
+
+#### 思路
+
+这是一个动态规划的题。因为只能向右或者向下走，所以到一个点`(i, j)`的路径条数即为到点`(i - 1, j)`和点`(i, j - 1)`的路劲之和，初始化第一行第一列的路径数为一，然后依次遍历更新路径数组，最后返回`(m, n)`的值即可。
+
+## 63. Unique Paths II
+
+Follow up for "Unique Paths":
+
+Now consider if some obstacles are added to the grids. How many unique paths would there be?
+
+An obstacle and empty space is marked as 1 and 0 respectively in the grid.
+
+For example,
+There is one obstacle in the middle of a 3x3 grid as illustrated below.
+
+	[
+	  [0,0,0],
+	  [0,1,0],
+	  [0,0,0]
+	]
+
+The total number of unique paths is 2.
+
+#### 思路
+
+同第62题，只不过需要考虑下障碍物，有障碍物的地方直接路径数为0即可。
+
+## 64. Minimum Path Sum
+
+Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
+
+Note: You can only move either down or right at any point in time.
+
+Example 1:
+
+	[
+		[1,3,1],
+	 	[1,5,1],
+	 	[4,2,1]
+	]
+	 
+Given the above grid map, return 7. Because the path 1→3→1→1→1 minimizes the sum.
+
+#### 思路
+
+同62题，动态规划问题，只需要把路径数组存的数变为到该点的最小和即可。
+
+## 73. Set Matrix Zeroes
+
+Given a m x n matrix, if an element is 0, set its entire row and column to 0. Do it in place.
+
+#### 思路
+
+不能直接修改原矩阵，分别用两个数组来储存需要置为0的行和列，然后遍历矩阵，更新这两个数组，再根据这俩数组去修改原矩阵。
+
+## 74. Search a 2D Matrix
+
+Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
+
+- Integers in each row are sorted from left to right.
+- The first integer of each row is greater than the last integer of the previous row.
+
+For example,
+
+Consider the following matrix:
+
+	[
+	  [1,   3,  5,  7],
+	  [10, 11, 16, 20],
+	  [23, 30, 34, 50]
+	]
+
+Given target = `3`, return `true`.
+
+#### 思路
+
+因为该矩阵是从左到右依次增加，且每一行都比上一行的所有数大，所以我们可以将它考虑成一个长度为`m*n`的一维递增数组，然后利用二分法查找。
+
+## 75. Sort Colors
+
+Given an array with n objects colored red, white or blue, sort them so that objects of the same color are adjacent, with the colors in the order red, white and blue.
+
+Here, we will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
+
+**Note:**
+You are not suppose to use the library's sort function for this problem.
+
+#### 思路
+
+令`i = 0, j = n - 1`，当`i < j`时，依次遍历，如果第i个数是2，则与第j个数交换位置，然后`j--`，一遍结束后第j个数之后全为2，此时令`i = 0`，从第j个数往前遍历，如果第j个数为0，则与第i个数交换位置，然后`i++`，当`i = j`时遍历结束，排序完成。
+
+## 78. Subsets
+
+Given a set of distinct integers, nums, return all possible subsets (the power set).
+
+**Note:** The solution set must not contain duplicate subsets.
+
+For example,
+If nums = `[1,2,3]`, a solution is:
+
+	[
+	  [3],
+	  [1],
+	  [2],
+	  [1,2,3],
+	  [1,3],
+	  [2,3],
+	  [1,2],
+	  []
+	]
+
+#### 思路
+
+将上面的例子的添加顺序稍微一改，就可以得到代码思路：
+
+	[
+		[],
+		[1],
+		[1, 2],
+		[1, 2, 3],
+		[1, 3],
+		[2],
+		[2, 3],
+		[3],
+	]
+
+## 79. Word Search
+
+Given a 2D board and a word, find if the word exists in the grid.
+
+The word can be constructed from letters of sequentially adjacent cell, where "adjacent" cells are those horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+For example,
+
+Given board =
+
+	[
+	  ['A','B','C','E'],
+	  ['S','F','C','S'],
+	  ['A','D','E','E']
+	]
+
+word = `"ABCCED"`, -> returns `true`,
+
+word = `"SEE"`, -> returns `true`,
+
+word = `"ABCB"`, -> returns `false`.
+
+## 80. Remove Duplicates from Sorted Array II
+
+Follow up for "Remove Duplicates":
+What if duplicates are allowed at most twice?
+
+For example,
+Given sorted array nums = `[1,1,1,2,2,3]`,
+
+Your function should return length = `5`, with the first five elements of nums being `1`, `1`, `2`, `2` and `3`. It doesn't matter what you leave beyond the new length.
+
+## 44. Wildcard Matching
+
+Implement wildcard pattern matching with support for '?' and '*'.
+
+'?' Matches any single character.
+
+'*' Matches any sequence of characters (including the empty sequence).
+
+The matching should cover the entire input string (not partial).
+
+The function prototype should be:
+bool isMatch(const char \*s, const char \*p)
+
+Some examples:
+
+	isMatch("aa","a") → false
+	isMatch("aa","aa") → true
+	isMatch("aaa","aa") → false
+	isMatch("aa", "*") → true
+	isMatch("aa", "a*") → true
+	isMatch("ab", "?*") → true
+	isMatch("aab", "c*a*b") → false
+
+## 72. Edit Distance
+
+Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)
+
+You have the following 3 operations permitted on a word:
+
+a) Insert a character
+
+b) Delete a character
+
+c) Replace a character
+
+## 43. Multiply Strings
+
+Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2.
+
+**Note:**
+
+The length of both num1 and num2 is < 110.
+
+Both num1 and num2 contains only digits 0-9.
+
+Both num1 and num2 does not contain any leading zero.
+
+You must not use any built-in BigInteger library or convert the inputs to integer directly.
+
+## 46. Permutations
+
+Given a collection of distinct numbers, return all possible permutations.
+
+For example,
+
+[1,2,3] have the following permutations:
+		
+	[
+  		[1,2,3],
+		[1,3,2],
+	  	[2,1,3],
+  		[2,3,1],
+	  	[3,1,2],
+  		[3,2,1]
+	]
+	
+## 60. Permutation Sequence
+
+The set [1,2,3,…,n] contains a total of n! unique permutations.
+
+By listing and labeling all of the permutations in order,
+We get the following sequence (ie, for n = 3):
+
+1. "123"
+2. "132"
+3. "213"
+4. "231"
+5. "312"
+6. "321"
+
+Given n and k, return the kth permutation sequence.
+
+Note: Given n will be between 1 and 9 inclusive.
+
+
+
+## 49. Group Anagrams
+
+Given an array of strings, group anagrams together.
+
+For example, given: `["eat", "tea", "tan", "ate", "nat", "bat"]`, 
+
+Return:
+
+	[
+	  ["ate", "eat","tea"],
+	  ["nat","tan"],
+	  ["bat"]
+	]
+
+**Note**: All inputs will be in lower-case.
+
+## 51. N-Queens
+
+The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
+
+Given an integer n, return all distinct solutions to the n-queens puzzle.
+
+Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space respectively.
+
+For example,
+
+There exist two distinct solutions to the 4-queens puzzle:
+
+	[
+	 [".Q..",  // Solution 1
+	  "...Q",
+	  "Q...",
+	  "..Q."],
+	
+	 ["..Q.",  // Solution 2
+	  "Q...",
+	  "...Q",
+	  ".Q.."]
+	]
+
+## 52. N-Queens II
+
+Follow up for N-Queens problem.
+
+Now, instead outputting board configurations, return the total number of distinct solutions.
+
+## 76. Minimum Window Substring
+
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+
+For example,
+
+S = `"ADOBECODEBANC"`
+
+T = `"ABC"`
+
+Minimum window is `"BANC"`.
+
+**Note:**
+If there is no such window in S that covers all characters in T, return the empty string "".
+
+If there are multiple such windows, you are guaranteed that there will always be only one unique minimum window in S.
+
+## 77. Combinations
+
+Given two integers n and k, return all possible combinations of k numbers out of 1 ... n.
+
+For example,
+
+If n = 4 and k = 2, a solution is:
+
+	[
+	  [2,4],
+	  [3,4],
+	  [2,3],
+	  [1,2],
+	  [1,3],
+	  [1,4],
+	]
+

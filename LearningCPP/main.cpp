@@ -966,7 +966,7 @@ int trap(vector<int>& height) {
     return ans;
 }
 
-//43. Jump Game2
+//45. Jump Game2
 int jump(vector<int>& nums) {
     int n = (int)nums.size();
     if(n <= 1) return 0;
