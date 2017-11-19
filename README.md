@@ -1081,6 +1081,14 @@ word = `"SEE"`, -> returns `true`,
 
 word = `"ABCB"`, -> returns `false`.
 
+#### 审题
+
+题目意思是从一个二维数组中，判断输入字符串是否存在，即以二维数组中某一个字符为起点，画一条只能横着走或者竖着走的线，如果能连出该字符串，则返回true，否则返回false，同一个字符串只能经过一次。
+
+#### 思路
+
+分别以二维数组中的每一个点为起点进行深度遍历，如果存在则返回true，反之返回false。
+
 ## 80. Remove Duplicates from Sorted Array II
 
 Follow up for "Remove Duplicates":
@@ -1090,6 +1098,8 @@ For example,
 Given sorted array nums = `[1,1,1,2,2,3]`,
 
 Your function should return length = `5`, with the first five elements of nums being `1`, `1`, `2`, `2` and `3`. It doesn't matter what you leave beyond the new length.
+
+
 
 ## 44. Wildcard Matching
 
