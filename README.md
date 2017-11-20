@@ -1099,7 +1099,9 @@ Given sorted array nums = `[1,1,1,2,2,3]`,
 
 Your function should return length = `5`, with the first five elements of nums being `1`, `1`, `2`, `2` and `3`. It doesn't matter what you leave beyond the new length.
 
+#### 思路
 
+这是一个有序递增的数列，因为要求去重，且3个及3个以上才算重复，所以我们可以得出目标数列的一个特点：`nums[i] > nums[i - 2]`，而且新数列的数量是小于等于原数列的，所以我们可以直接在原数列上进行操作而不会覆盖数据，这样就不需要额外的空间了。
 
 ## 44. Wildcard Matching
 
@@ -1123,6 +1125,10 @@ Some examples:
 	isMatch("aa", "a*") → true
 	isMatch("ab", "?*") → true
 	isMatch("aab", "c*a*b") → false
+
+#### 审题
+
+字符串s为输入字符串，p为匹配模型，也就是说只有字符串p里面会带 '?' 和 '*' 。
 
 ## 72. Edit Distance
 
