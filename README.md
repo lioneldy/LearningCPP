@@ -1142,6 +1142,10 @@ b) Delete a character
 
 c) Replace a character
 
+#### 思路
+
+这个题是个动态规划的题，可以用一个二维数组`dp[i][j]`表示`word1`前`i`个字符转变成`word2`前`j`个字符所需要的最少步数，初始化第一行和第一列，然后遍历更新dp数组。
+
 ## 43. Multiply Strings
 
 Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2.
@@ -1155,6 +1159,10 @@ Both num1 and num2 contains only digits 0-9.
 Both num1 and num2 does not contain any leading zero.
 
 You must not use any built-in BigInteger library or convert the inputs to integer directly.
+
+#### 思路
+
+实现手动乘法，需要注意的一点是长度为m和n的两个数相乘，乘积的长度最多为`m + n`，因为不允许使用任何处理大数的库，正常的整数类型一定会溢出，所以我们采用字符串的方式来存储乘积。
 
 ## 46. Permutations
 
@@ -1173,6 +1181,10 @@ For example,
   		[3,2,1]
 	]
 	
+#### 思路
+
+全排列就是从第一个数字起每个数分别与它后面的数字交换。去重的全排列就是从第一个数字起每个数分别与它后面非重复出现的数字交换。
+
 ## 60. Permutation Sequence
 
 The set [1,2,3,…,n] contains a total of n! unique permutations.
@@ -1191,7 +1203,13 @@ Given n and k, return the kth permutation sequence.
 
 Note: Given n will be between 1 and 9 inclusive.
 
+#### 审题
 
+这个题看似求全排列，实际上不是，这里需要求从小到大排列的第k个排列。
+
+#### 思路
+
+因为n位数有n!种排列方式，除去第一位，剩下的`n - 1`位有`(n - 1)!`种，所以我们可以根据k的大小，依次计算出最高位是哪个数。
 
 ## 49. Group Anagrams
 
@@ -1208,6 +1226,10 @@ Return:
 	]
 
 **Note**: All inputs will be in lower-case.
+
+#### 思路
+
+这个题可以利用`map`容器来解决，以每个字符串重新排序后的字符串为键，值就是相同键的字符串数组。
 
 ## 51. N-Queens
 
@@ -1233,11 +1255,35 @@ There exist two distinct solutions to the 4-queens puzzle:
 	  ".Q.."]
 	]
 
+#### 审题
+
+N皇后问题是一个经典的问题，在一个N*N的棋盘上放置N个皇后，每行一个并使其不能互相攻击（同一行、同一列、同一斜线上的皇后都会自动攻击）。
+
+#### 思路
+
+采用回溯法，用一个N*N的矩阵来存储棋盘：
+
+1. 开始, 清空棋盘，当前行设为第一行，当前列设为第一列
+2. 在当前行，当前列的位置上判断是否满足条件(即保证经过这一点的行,列与斜线上都没有两个皇后)，若不满足，跳到第4步
+3. 在当前位置上满足条件的情形：
+	- 在当前位置放一个皇后，若当前行是最后一行，记录一个解；
+	- 若当前行不是最后一行，当前行设为下一行, 当前列设为当前行的第一个待测位置；
+	- 若当前行是最后一行，当前列不是最后一列，当前列设为下一列；
+	- 若当前行是最后一行，当前列是最后一列，回溯，即清空当前行及以下各行的棋盘，然后，当前行设为上一行，当前列设为当前行的下一个待测位置；
+	- 以上返回到第2步
+4. 在当前位置上不满足条件的情形：
+	- 若当前列不是最后一列，当前列设为下一列，返回到第2步;
+	- 若当前列是最后一列了，回溯，即，若当前行已经是第一行了，算法退出，否则，清空当前行及以下各行的棋盘，然后，当前行设为上一行，当前列设为当前行的下一个待测位置，返回到第2步; 
+
 ## 52. N-Queens II
 
 Follow up for N-Queens problem.
 
 Now, instead outputting board configurations, return the total number of distinct solutions.
+
+#### 思路
+
+在上一题的基础上，返回解数组的长度即可。
 
 ## 76. Minimum Window Substring
 
