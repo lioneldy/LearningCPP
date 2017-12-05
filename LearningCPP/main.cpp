@@ -1386,15 +1386,16 @@ vector<vector<int>> permute(vector<int>& nums) {
 
 //49. Group Anagrams
 vector<vector<string>> groupAnagrams(vector<string>& strs) {
-    unordered_map<string, multiset<string>> mp;
+    unordered_map<string, vector<string>> mp;
     vector<vector<string>> res;
     for (string s : strs) {
         string t = s;
         sort(t.begin(), t.end());
-        mp[t].insert(s);
+        mp[t].push_back(s);
     }
     for (auto m : mp) {
-        vector<string> ans(m.second.begin(), m.second.end());
+        vector<string> ans = m.second;
+        sort(ans.begin(), ans.end());
         res.push_back(ans);
     }
     return res;
@@ -1571,6 +1572,24 @@ vector<vector<int>> combine2(int n, int k) {
         }
     }
     return res;
+}
+
+//84. Largest Rectangle in Histogram
+int largestRectangleArea(vector<int> &heights) {
+    int ret = 0;
+    heights.push_back(0);
+    vector<int> index;
+    for(int i = 0; i < heights.size(); i++) {
+        while(index.size() > 0 && heights[index.back()] >= heights[i]) {
+            int h = heights[index.back()];
+            index.pop_back();
+            int sidx = index.size() > 0 ? index.back() : -1;
+            if(h * (i-sidx-1) > ret)
+                ret = h * (i-sidx-1);
+        }
+        index.push_back(i);
+    }
+    return ret;
 }
 
 int main(int argc, const char * argv[]) {
