@@ -95,14 +95,13 @@ int reverseInt(int x) {
 
 //9. Palindrome Number
 bool isPalindrome(int x) {
-    if(x<0|| (x!=0 &&x%10==0)) return false;
-    int sum=0;
-    while(x>sum)
-    {
-        sum = sum*10+x%10;
-        x = x/10;
+    if(x < 0 || (x != 0 && x % 10 == 0)) return false;
+    int sum = 0;
+    while(x > sum) {
+        sum = sum * 10 + x % 10;
+        x = x / 10;
     }
-    return (x==sum)||(x==sum/10);
+    return (x == sum) || (x == sum / 10);
 }
 
 //10. Regular Expression Matching
@@ -1627,6 +1626,192 @@ int maximalRectangle(vector<vector<char>>& matrix) {
     return maxA;
 }
 
+//88. Merge Sorted Array
+void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+    int k = m + n - 1;
+    int i = m - 1;
+    int j = n - 1;
+    while (i >= 0 && j >= 0) {
+        if (nums1[i] > nums2[j]) nums1[k--] = nums1[i--];
+        else nums1[k--] = nums2[j--];
+    }
+    while (j >= 0) {
+        nums1[k--] = nums2[j--];
+    }
+}
+
+//100. Same Tree
+bool isSameTree(TreeNode* p, TreeNode* q) {
+    if (!p && !q) {
+        return true;
+    }
+    if (p && q) {
+        return p->val == q->val && isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+    } else return false;
+}
+
+//101. Symmetric Tree
+bool isSymmetric(TreeNode* root) {
+    if (root == NULL) {
+        return true;
+    }
+    queue<TreeNode*> q1, q2;
+    q1.push(root->left);
+    q2.push(root->right);
+    while (!q1.empty() && !q2.empty()) {
+        TreeNode* left = q1.front();
+        q1.pop();
+        TreeNode* right = q2.front();
+        q2.pop();
+        if (left == NULL && right == NULL) {
+            continue;
+        }
+        if (left == NULL || right == NULL) {
+            return false;
+        }
+        if (left->val != right->val) {
+            return false;
+        }
+        q1.push(left->left);
+        q1.push(left->right);
+        q2.push(right->right);
+        q2.push(right->left);
+    }
+    return true;
+}
+bool isSymmetricHelp(TreeNode* left, TreeNode* right) {
+    if (left == NULL && right == NULL) {
+        return true;
+    } else return left->val == right->val && isSymmetricHelp(left->left, right->right) && isSymmetricHelp(left->right, right->left);
+}
+bool isSymmetric2(TreeNode* root) {
+    if (root == NULL) return true;
+    return isSymmetricHelp(root->left, root->right);
+}
+
+//104. Maximum Depth of Binary Tree
+int maxDepth(TreeNode* root) {
+    if (root == NULL) return 0;
+    else return max(maxDepth(root->left) + 1, maxDepth(root->right) + 1);
+}
+
+//107. Binary Tree Level Order Traversal II
+vector<vector<int>> levelOrderBottom(TreeNode* root) {
+    vector<vector<int>> ans;
+    vector<TreeNode*> q;
+    if (root == NULL) {
+        return ans;
+    }
+    q.push_back(root);
+    while (!q.empty()) {
+        vector<TreeNode*> qtmp;
+        vector<int> tmp;
+        for (int i = 0; i < q.size(); i++) {
+            if (q[i] != NULL) {
+                tmp.push_back(q[i]->val);
+                qtmp.push_back(q[i]->left);
+                qtmp.push_back(q[i]->right);
+            }
+        }
+        q = qtmp;
+        ans.push_back(tmp);
+    }
+    reverse(ans.begin(), ans.end());
+    return ans;
+}
+
+//108. Convert Sorted Array to Binary Search Tree
+TreeNode* sortedArrayToBST(vector<int>& nums) {
+    if (nums.size() == 0) return NULL;
+    int mid = (int)nums.size() / 2;
+    TreeNode* root = new TreeNode(nums[mid]);
+    vector<int> leftNums(nums.begin(), nums.begin() + mid);
+    vector<int> rightNums(nums.begin() + mid + 1, nums.end());
+    root->left = sortedArrayToBST(leftNums);
+    root->right = sortedArrayToBST(rightNums);
+    return root;
+}
+
+//110. Balanced Binary Tree
+bool isBalanced(TreeNode* root) {
+    if (root == NULL) return true;
+    else return abs(maxDepth(root->right) - maxDepth(root->left)) <= 1 && isBalanced(root->left) && isBalanced(root->right);
+}
+
+//111. Minimum Depth of Binary Tree
+int minDepth(TreeNode* root) {
+//  非递归法
+    if (root == NULL) return 0;
+    queue<TreeNode*> q;
+    q.push(root);
+    int depth = 1;
+    while (!q.empty()) {
+        int n = (int)q.size();
+        while (n--) {
+            TreeNode* tmp = q.front();
+            q.pop();
+            if (tmp == NULL) {
+                continue;
+            } else {
+                if (tmp->left == NULL && tmp->right == NULL) return depth;
+                q.push(tmp->left);
+                q.push(tmp->right);
+            }
+        }
+        depth++;
+    }
+    return depth;
+//    递归法
+//    if(root==NULL) return 0;
+//    if(root->left==NULL) return minDepth(root->right)+1;
+//    if(root->right==NULL) return minDepth(root->left)+1;
+//    return min(minDepth(root->left),minDepth(root->right))+1;
+}
+
+//112. Path Sum
+bool hasPathSum(TreeNode* root, int sum) {
+    if (root == NULL) {
+        return false;
+    }
+    if (root->val == sum && root->left == NULL && root->right == NULL) {
+        return true;
+    } else return hasPathSum(root->left, sum - root->val) || hasPathSum(root->right, sum - root->val);
+}
+
+//118. Pascal's Triangle
+vector<vector<int>> generate(int numRows) {
+    vector<vector<int>> ans;
+    if (numRows == 0) {
+        return ans;
+    }
+    vector<int> one;
+    one.push_back(1);
+    ans.push_back(one);
+    for (int i = 1; i < numRows; i++) {
+        vector<int> tmp;
+        tmp.push_back(1);
+        for (int j = 1; j < i; j++) {
+            tmp.push_back(ans[i - 1][j - 1] + ans[i - 1][j]);
+        }
+        tmp.push_back(1);
+        ans.push_back(tmp);
+    }
+    return ans;
+}
+
+//119. Pascal's Triangle II
+vector<int> getRow(int rowIndex) {
+    vector<int> res(rowIndex + 1, 0);
+    res[0] = 1;
+    for (int i = 1; i <= rowIndex; i++) {
+        for (int j = 1; j <= i; j++) {
+            res[j] += res[j - 1];
+        }
+    }
+    return res;
+}
+
 int main(int argc, const char * argv[]) {
+    vector<int> ans = getRow(3);
     return 0;
 }
