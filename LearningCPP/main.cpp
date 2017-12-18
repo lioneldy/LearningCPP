@@ -1905,7 +1905,100 @@ ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
     return p;
 }
 
+//90. Subsets II
+vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+    vector<vector<int>> ans = {{}};
+    sort(nums.begin(), nums.end());
+    for (int i = 0; i < nums.size(); ) {
+        int count = 0;
+        while (count + i < nums.size() && nums[count + i] == nums[i]) count++;
+        int preN = (int)ans.size();
+        for (int k = 0; k < preN; k++) {
+            vector<int> tmp = ans[k];
+            for (int j = 0; j < count; j++) {
+                tmp.push_back(nums[i]);
+                ans.push_back(tmp);
+            }
+        }
+        i += count;
+    }
+    return ans;
+}
+
+//95. Unique Binary Search Trees II
+TreeNode* clone(TreeNode *root) {
+    if (root == NULL) {
+        return NULL;
+    }
+    TreeNode *newRoot = new TreeNode(root->val);
+    newRoot->left = clone(root->left);
+    newRoot->right = clone(root->right);
+    return newRoot;
+}
+vector<TreeNode*> generateTrees(int n) {
+    vector<TreeNode*> ans;
+    if (n > 0) {
+        TreeNode *root = new TreeNode(1);
+        ans.push_back(root);
+    }
+    for (int i = 2; i <= n; i++) {
+        vector<TreeNode*> tmp;
+        for (int j = 0; j < ans.size(); j++) {
+            TreeNode *oldRoot = ans[j];
+            TreeNode *target = clone(oldRoot);
+            TreeNode *newRoot = new TreeNode(i);
+            newRoot->left = target;
+            tmp.push_back(newRoot);
+            if (oldRoot != NULL) {
+                TreeNode *tmpOld = clone(oldRoot);
+                TreeNode *p = tmpOld;
+                while (p != NULL) {
+                    TreeNode *pr = p->right;
+                    TreeNode *newNode = new TreeNode(i);
+                    p->right = newNode;
+                    newNode->left = pr;
+                    TreeNode *q = clone(tmpOld);
+                    tmp.push_back(q);
+                    p->right = pr;
+                    p = p->right;
+                }
+            }
+        }
+        ans = tmp;
+    }
+    return ans;
+}
+
+//169. Majority Element
+int majorityElement(vector<int>& nums) {
+    int ans = nums[0], count = 1;
+    for (int i = 1; i < nums.size(); i++) {
+        if (nums[i] == ans) count++;
+        else count--;
+        if (count < 0) {
+            ans = nums[i];
+            count = 1;
+        }
+    }
+    return ans;
+}
+
+//167. Two Sum II - Input array is sorted
+vector<int> twoSum(vector<int>& numbers, int target) {
+    vector<int> ans;
+    for (int i = 0, j = (int) numbers.size() - 1; i < j; ) {
+        int tmp = numbers[i] + numbers[j];
+        if (tmp == target) {
+            ans.push_back(i + 1);
+            ans.push_back(j + 1);
+            return ans;
+        } else if (tmp > target) j--;
+        else i++;
+    }
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
-    vector<int> ans = getRow(3);
+    vector<TreeNode*> ans = generateTrees(3);
     return 0;
 }
