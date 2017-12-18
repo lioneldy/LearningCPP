@@ -1811,6 +1811,100 @@ vector<int> getRow(int rowIndex) {
     return res;
 }
 
+//94. Binary Tree Inorder Traversal
+vector<int> inorderTraversal(TreeNode* root) {
+    stack<TreeNode*> s;
+    vector<int> ans;
+    TreeNode* p = root;
+    while (!s.empty() || p != NULL) {
+        while (p != NULL) {
+            s.push(p);
+            p = p->left;
+        }
+        if (!s.empty()) {
+            p = s.top();
+            s.pop();
+            ans.push_back(p->val);
+            p = p->right;
+        }
+    }
+    return ans;
+}
+
+//93. Restore IP Addresses
+vector<string> restoreIpAddresses(string s) {
+    vector<string> ans;
+    string tmp;
+    for (int a = 1; a <= 3; a++) {
+        for (int b = 1; b <= 3; b++) {
+            for (int c = 1; c <= 3; c++) {
+                for (int d = 1; d <= 3; d++) {
+                    if (a + b + c + d == s.length()) {
+                        int A = stoi(s.substr(0, a));
+                        int B = stoi(s.substr(a, b));
+                        int C = stoi(s.substr(a+b, c));
+                        int D = stoi(s.substr(a+b+c, d));
+                        if (A<=255 && B<=255 && C<=255 && D<=255)
+                            if ( (tmp=to_string(A)+"."+to_string(B)+"."+to_string(C)+"."+to_string(D)).length() == s.length()+3)
+                                ans.push_back(tmp);
+                    }
+                }
+            }
+        }
+    }
+    return ans;
+}
+
+//96. Unique Binary Search Trees
+int numTrees(int n) {
+    vector<int> dp(n + 1, 0);
+    dp[0] = 1;
+    dp[1] = 1;
+    for (int i = 2; i <= n; i++) {
+        for (int j = 1; j <= i; j++) {
+            dp[i] += dp[j - 1] * dp[i - j];
+        }
+    }
+    return dp[n];
+}
+
+//125. Valid Palindrome
+bool isPalindrome(string s) {
+    int i = 0, j = (int)s.length() - 1;
+    while (i < j) {
+        while (isalnum(s[i]) == 0 && i < j) i++;
+        while (isalnum(s[j]) == 0 && i < j) j--;
+        if (toupper(s[i]) != toupper(s[j])) {
+            return false;
+        }
+        i++;
+        j--;
+    }
+    return true;
+}
+
+//141. Linked List Cycle
+bool hasCycle(ListNode *head) {
+    ListNode *p = head, *q = head;
+    while (p != NULL) {
+        if (p->next == NULL) return false;
+        p = p->next->next;
+        q = q->next;
+        if (p == q) return true;
+    }
+    return false;
+}
+
+//160. Intersection of Two Linked Lists
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+    ListNode *p = headA, *q = headB;
+    while (p != q) {
+        p = p->next == NULL ? headB : p->next;
+        q = q->next == NULL ? headA : q->next;
+    }
+    return p;
+}
+
 int main(int argc, const char * argv[]) {
     vector<int> ans = getRow(3);
     return 0;
