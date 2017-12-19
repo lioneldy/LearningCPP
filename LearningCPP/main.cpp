@@ -1998,7 +1998,40 @@ vector<int> twoSum(vector<int>& numbers, int target) {
     return ans;
 }
 
+//98. Validate Binary Search Tree
+bool isValidBSTHelp(TreeNode* root, TreeNode *minNode, TreeNode *maxNode) {
+    if (root == NULL) return true;
+    if ((minNode != NULL && minNode->val >= root->val) || (maxNode != NULL && maxNode->val <= root->val)) return false;
+    else return isValidBSTHelp(root->left, minNode, root) && isValidBSTHelp(root->right, root, maxNode);
+}
+bool isValidBST(TreeNode* root) {
+    if (root == NULL) return true;
+    else return isValidBSTHelp(root, NULL, NULL);
+}
+
+//97. Interleaving String
+bool isInterleave(string s1, string s2, string s3) {
+    if (s1.length() + s2.length() != s3.length()) {
+        return false;
+    }
+    bool dp[s1.length() + 1][s2.length() + 1];
+    for (int i = 0; i < s1.length(); i++) {
+        for (int j = 0; j < s2.length(); j++) {
+            if (i == 0 && j == 0) {
+                dp[i][j] = true;
+            } else if (i == 0) {
+                dp[i][j] = dp[i][j - 1] && s2[j - 1] == s3[i + j - 1];
+            } else if (j == 0) {
+                dp[i][j] = dp[i - 1][j] && s1[i - 1] == s3[i + j - 1];
+            } else {
+                dp[i][j] = (dp[i][j - 1] && s2[j - 1] == s3[i + j - 1]) || (dp[i - 1][j] && s1[i - 1] == s3[i + j - 1]);
+            }
+        }
+    }
+    return dp[s1.length()][s2.length()];
+}
+
 int main(int argc, const char * argv[]) {
-    vector<TreeNode*> ans = generateTrees(3);
+    bool flag = isInterleave("a", "", "a");
     return 0;
 }
