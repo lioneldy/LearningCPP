@@ -2031,7 +2031,115 @@ bool isInterleave(string s1, string s2, string s3) {
     return dp[s1.length()][s2.length()];
 }
 
+//99. Recover Binary Search Tree
+void recoverTree(TreeNode* root) {
+    TreeNode *firstNode = NULL;
+    TreeNode *secondNode = NULL;
+    TreeNode *preNode = NULL;
+    stack<TreeNode*> s;
+    TreeNode *p = root;
+    while (!s.empty() || p != NULL) {
+        while (p != NULL) {
+            s.push(p);
+            p = p->left;
+        }
+        if (preNode == NULL) {
+            preNode = s.top();
+        }
+        TreeNode *tmp = s.top();
+        if (tmp->val < preNode->val) {
+            if (firstNode == NULL) {
+                firstNode = preNode;
+                secondNode = tmp;
+            } else secondNode = tmp;
+        }
+        p = tmp->right;
+        preNode = tmp;
+        s.pop();
+    }
+    int tmp = firstNode->val;
+    firstNode->val = secondNode->val;
+    secondNode->val = tmp;
+}
+
+//102. Binary Tree Level Order Traversal
+vector<vector<int>> levelOrder(TreeNode* root) {
+    vector<vector<int>> ans;
+    queue<TreeNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        int n = (int)q.size();
+        vector<int> res;
+        while (n--) {
+            TreeNode* tmp = q.front();
+            if (tmp != NULL) {
+                res.push_back(tmp->val);
+                q.push(tmp->left);
+                q.push(tmp->right);
+            }
+            q.pop();
+        }
+        if (!res.empty()) ans.push_back(res);
+    }
+    return ans;
+}
+
+//103. Binary Tree Zigzag Level Order Traversal
+vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+    vector<vector<int>> ans;
+    stack<TreeNode*> s;
+    s.push(root);
+    bool rightToLeft = false;
+    while (!s.empty()) {
+        int n = (int)s.size();
+        vector<int> res;
+        stack<TreeNode*> tmpS;
+        while (n--) {
+            TreeNode* tmp = s.top();
+            s.pop();
+            if (tmp != NULL) {
+                res.push_back(tmp->val);
+                if (rightToLeft) {
+                    tmpS.push(tmp->right);
+                    tmpS.push(tmp->left);
+                } else {
+                    tmpS.push(tmp->left);
+                    tmpS.push(tmp->right);
+                }
+            }
+        }
+        s = tmpS;
+        rightToLeft = !rightToLeft;
+        if (!res.empty()) ans.push_back(res);
+    }
+    return ans;
+}
+
+//109. Convert Sorted List to Binary Search Tree
+ListNode* list109;
+int count(ListNode* head) {
+    int ans = 0;
+    while (head != NULL) {
+        ans++;
+        head = head->next;
+    }
+    return ans;
+}
+TreeNode* generateBST(int n) {
+    if (n == 0) return NULL;
+    int mid = n / 2;
+    TreeNode* node = new TreeNode(0);
+    node->left = generateBST(mid);
+    node->val = list109->val;
+    list109 = list109->next;
+    node->right = generateBST(n - mid - 1);
+    return node;
+}
+TreeNode* sortedListToBST(ListNode* head) {
+    list109 = head;
+    return generateBST(count(head));
+}
+
 int main(int argc, const char * argv[]) {
-    bool flag = isInterleave("a", "", "a");
     return 0;
 }
