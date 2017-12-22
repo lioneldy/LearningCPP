@@ -2140,6 +2140,40 @@ TreeNode* sortedListToBST(ListNode* head) {
     return generateBST(count(head));
 }
 
+//113. Path Sum II
+void pathSumHelp(TreeNode* root, int sum, vector<vector<int>> &ans, vector<int> &res) {
+    if (root == NULL) return;
+    res.push_back(root->val);
+    if (root->val == sum && root->left == NULL && root->right == NULL) ans.push_back(res);
+    pathSumHelp(root->left, sum - root->val, ans, res);
+    pathSumHelp(root->right, sum - root->val, ans, res);
+    res.pop_back();
+}
+vector<vector<int>> pathSum(TreeNode* root, int sum) {
+    vector<vector<int>> ans;
+    vector<int> res;
+    pathSumHelp(root, sum, ans, res);
+    return ans;
+}
+
+//114. Flatten Binary Tree to Linked List
+void flatten(TreeNode* root) {
+    if (root == NULL) return;
+    TreeNode* now = root;
+    while (now != NULL) {
+        if (now->left != NULL) {
+            TreeNode* pre = now->left;
+            while (pre->right != NULL) {
+                pre = pre->right;
+            }
+            pre->right = now->right;
+            now->right = now->left;
+            now->left = NULL;
+        }
+        now = now->right;
+    }
+}
+
 int main(int argc, const char * argv[]) {
     return 0;
 }
