@@ -35,6 +35,12 @@ struct Interval {
     Interval(int s, int e) : start(s), end(e) {}
 };
 
+struct TreeLinkNode {
+    int val;
+    TreeLinkNode *left, *right, *next;
+    TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
+};
+
 //2. Add Two Numbers
 ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
     ListNode *sumList = new ListNode(0);
@@ -2171,6 +2177,104 @@ void flatten(TreeNode* root) {
             now->left = NULL;
         }
         now = now->right;
+    }
+}
+
+//747. Largest Number Greater Than Twice of Others
+int dominantIndex(vector<int>& nums) {
+    if (nums.empty()) {
+        return -1;
+    }
+    int index = 0;
+    int maxNum = nums[0];
+    for (int i = 1; i < nums.size(); i++) {
+        if (nums[i] > maxNum) {
+            maxNum = nums[i];
+            index = i;
+        }
+    }
+    for (int i = 0; i < nums.size(); i++) {
+        if (i == index) {
+            continue;
+        }
+        if (nums[i] * 2 > maxNum) {
+            return -1;
+        }
+    }
+    return index;
+}
+
+//106. Construct Binary Tree from Postorder and Inorder Traversal
+TreeNode* buildTreeHelp(vector<int> postorder, vector<int> inorder, int pStart, int pEnd, int inStart, int inEnd) {
+    if (inStart > inEnd) {
+        return NULL;
+    }
+    TreeNode* p = new TreeNode(postorder[pEnd]);
+    int pos = 0;
+    for (int i = inStart; i <= inEnd; i++) {
+        if (postorder[pEnd] == inorder[i]) {
+            pos = i;
+            break;
+        }
+    }
+    p->left = buildTreeHelp(postorder, inorder, pStart, pStart + pos - inStart - 1, inStart, pos - 1);
+    p->right = buildTreeHelp(postorder, inorder, pEnd - (inEnd - pos), pEnd - 1, pos + 1, inEnd);
+    return p;
+}
+//105. Construct Binary Tree from Preorder and Inorder Traversal
+TreeNode* buildTreeHelp2(vector<int> preorder, vector<int> inorder, int preStart, int preEnd, int inStart, int inEnd) {
+    if (preStart > preEnd) {
+        return NULL;
+    }
+    TreeNode* p = new TreeNode(preorder[preStart]);
+    int pos = 0;
+    for (int i = inStart; i <= inEnd; i++) {
+        if (preorder[preStart] == inorder[i]) {
+            pos = i;
+            break;
+        }
+    }
+    p->left = buildTreeHelp(preorder, inorder, preStart + 1, pos - inStart + preStart, inStart, pos - 1);
+    p->right = buildTreeHelp(preorder, inorder, preEnd - inEnd + pos + 1, preEnd, pos + 1, inEnd);
+    return p;
+}
+TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+    int n = (int)postorder.size();
+    TreeNode* root = buildTreeHelp(postorder, inorder, 0, n - 1, 0, n - 1);
+    return root;
+}
+
+//115. Distinct Subsequences
+int numDistinct(string s, string t) {
+    int n = (int)s.length(), m = (int)t.length();
+    vector<vector<int>> ans(m + 1, vector<int> (n + 1));
+    for (int i = 0; i <= m; i++) {
+        for (int j = 0; j <= n; j++) {
+            if (i == 0) {
+                ans[i][j] = 1;
+            } else if (j == 0) {
+                ans[i][j] = 0;
+            } else {
+                ans[i][j] = s[j - 1] == t[i - 1] ? (ans[i - 1][j - 1] + ans[i][j - 1]) : ans[i][j - 1];
+            }
+        }
+    }
+    return ans[m][n];
+}
+
+//116. Populating Next Right Pointers in Each Node
+void connect(TreeLinkNode *root) {
+    TreeLinkNode *pre = root;
+    TreeLinkNode *cur = NULL;
+    if (pre == NULL) return;
+    while (pre->left != NULL) {
+        cur = pre;
+        while (cur != NULL) {
+            cur->left->next = cur->right;
+            if (cur->next != NULL) cur->right->next = cur->next->left;
+            cur = cur->next;
+        }
+        pre = pre->left;
     }
 }
 
