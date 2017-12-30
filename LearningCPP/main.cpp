@@ -41,6 +41,18 @@ struct TreeLinkNode {
     TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
 };
 
+struct UndirectedGraphNode {
+    int label;
+    vector<UndirectedGraphNode *> neighbors;
+    UndirectedGraphNode(int x) : label(x) {};
+};
+
+struct Coordinate {
+    int x;
+    int y;
+    Coordinate(int a, int b) : x(a), y(b) {}
+};
+
 //2. Add Two Numbers
 ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
     ListNode *sumList = new ListNode(0);
@@ -2278,6 +2290,288 @@ void connect(TreeLinkNode *root) {
     }
 }
 
+//116. Populating Next Right Pointers in Each Node II
+void connect2(TreeLinkNode *root) {
+    TreeLinkNode *pre = NULL, *head = NULL;
+    TreeLinkNode *cur = root;
+    if (cur == NULL) return;
+    while (cur != NULL) {
+        while (cur != NULL) {
+            if (cur->left != NULL) {
+                if (pre != NULL) {
+                    pre->next = cur->left;
+                } else {
+                    head = cur->left;
+                }
+                pre = cur->left;
+            }
+            if (cur->right != NULL) {
+                if (pre != NULL) {
+                    pre->next = cur->right;
+                } else {
+                    head = cur->right;
+                }
+                pre = cur->right;
+            }
+            cur = cur->next;
+        }
+        cur = head;
+        head = NULL;
+        pre = NULL;
+    }
+}
+
+//120. Triangle
+int minimumTotal(vector<vector<int>>& triangle) {
+    if (triangle.empty()) return 0;
+    int minNum = INT_MAX;
+    for (int i = 0; i < triangle.size(); i++) {
+        for (int j = 0; j < triangle[i].size(); j++) {
+            if (i > 0) {
+                if (j == 0) {
+                    triangle[i][j] += triangle[i - 1][j];
+                } else if (j == triangle[i].size() - 1) {
+                    triangle[i][j] += triangle[i - 1][j - 1];
+                } else {
+                    triangle[i][j] += min(triangle[i - 1][j], triangle[i - 1][j - 1]);
+                }
+            }
+            if (i == triangle.size() - 1) {
+                minNum = min(minNum, triangle[i][j]);
+            }
+        }
+    }
+    return minNum;
+}
+
+//123. Best Time to Buy and Sell Stock III
+int maxProfit(vector<int>& prices) {
+    int hold1 = INT_MIN, hold2 = INT_MIN;
+    int release1 = 0, release2 = 0;
+    for (int price : prices) {
+        release2 = max(release2, hold2 + price);
+        hold2 = max(hold2, release1 - price);
+        release1 = max(release1, hold1 + price);
+        hold1 = max(hold1, -price);
+    }
+    return release2;
+}
+
+//124. Binary Tree Maximum Path Sum
+int maxPathSumHelp(TreeNode* root, int &maxSum) {
+    if (root == NULL) return 0;
+    int l = max(0, maxPathSumHelp(root->left, maxSum));
+    int r = max(0, maxPathSumHelp(root->right, maxSum));
+    maxSum = max(maxSum, l + r + root->val);
+    return root->val + max(l, r);
+}
+int maxPathSum(TreeNode* root) {
+    int maxSum = INT_MIN;
+    maxPathSumHelp(root, maxSum);
+    return maxSum;
+}
+
+//128. Longest Consecutive Sequence
+int longestConsecutive(vector<int>& nums) {
+    unordered_map<int, int> m;
+    int maxLen = 0;
+    for (int num : nums) {
+        if (m[num]) continue;
+        m[num] = m[num + 1] + m[num - 1] + 1;
+        m[num + m[num + 1]] = m[num];
+        m[num - m[num - 1]] = m[num];
+        maxLen = max(maxLen, m[num]);
+    }
+    return maxLen;
+}
+
+//129. Sum Root to Leaf Numbers
+void sumNumbersHelp(TreeNode* root, int &sum, int num, int c) {
+    if (root == NULL) return;
+    num = root->val + num * c;
+    if (root->left == NULL && root->right == NULL) sum += num;
+    sumNumbersHelp(root->left, sum, num, 10);
+    sumNumbersHelp(root->right, sum, num, 10);
+}
+int sumNumbers(TreeNode* root) {
+    int sum = 0;
+    sumNumbersHelp(root, sum, 0, 1);
+    return sum;
+}
+
+//130. Surrounded Regions
+bool isCoordinateValid(Coordinate a, int m, int n) {
+    if (a.x < 0 || a.x >= m || a.y < 0 || a.y >= n) {
+        return false;
+    } else return true;
+}
+void solveBFS(vector<vector<bool>> &visited, vector<vector<bool>> &surrounded, vector<vector<char>> board, int i, int j, int m, int n) {
+    vector<vector<bool>> tmp = surrounded;
+    bool flag = false;
+    visited[i][j] = true;
+    tmp[i][j] = false;
+    queue<Coordinate> q;
+    q.push(Coordinate(i, j));
+    while (!q.empty()) {
+        Coordinate dot = q.front();
+        if (dot.x == 0 || dot.x == m - 1 || dot.y == 0 || dot.y == n - 1) {
+            flag = true;
+        }
+        if (isCoordinateValid(Coordinate(dot.x + 1, dot.y), m, n) && !visited[dot.x + 1][dot.y] && board[dot.x + 1][dot.y] == 'O') {
+            tmp[dot.x + 1][dot.y] = false;
+            q.push(Coordinate(dot.x + 1, dot.y));
+            visited[dot.x + 1][dot.y] = true;
+        }
+        if (isCoordinateValid(Coordinate(dot.x, dot.y + 1), m, n) && !visited[dot.x][dot.y + 1] && board[dot.x][dot.y + 1] == 'O') {
+            tmp[dot.x][dot.y + 1] = false;
+            q.push(Coordinate(dot.x, dot.y + 1));
+            visited[dot.x][dot.y + 1] = true;
+        }
+        if (isCoordinateValid(Coordinate(dot.x - 1, dot.y), m, n) && !visited[dot.x - 1][dot.y] && board[dot.x - 1][dot.y] == 'O') {
+            tmp[dot.x - 1][dot.y] = false;
+            q.push(Coordinate(dot.x - 1, dot.y));
+            visited[dot.x - 1][dot.y] = true;
+        }
+        if (isCoordinateValid(Coordinate(dot.x, dot.y - 1), m, n) && !visited[dot.x][dot.y - 1] && board[dot.x][dot.y - 1] == 'O') {
+            tmp[dot.x][dot.y - 1] = false;
+            q.push(Coordinate(dot.x, dot.y - 1));
+            visited[dot.x][dot.y - 1] = true;
+        }
+        q.pop();
+    }
+    if (flag) {
+        surrounded = tmp;
+    }
+}
+void solve(vector<vector<char>>& board) {
+    if (board.empty()) return;
+    int m = (int)board.size();
+    int n = (int)board[0].size();
+    vector<vector<bool>> surrounded(m, vector<bool> (n, true));
+    vector<vector<bool>> visited(m, vector<bool> (n, false));
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (board[i][j] == 'O') {
+                if (!visited[i][j]) {
+                    solveBFS(visited, surrounded, board, i, j, m, n);
+                }
+                if (surrounded[i][j]) {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+    }
+}
+
+//131. Palindrome Partitioning
+bool isPalindrome(string s, int begin, int end) {
+    while (begin < end) {
+        if (s[begin] != s[end]) {
+            return false;
+        }
+        begin++;
+        end--;
+    }
+    return true;
+}
+void partitionHelp(vector<vector<string>> &ans, vector<string> &res, int index, string s) {
+    if (index == s.length()) {
+        ans.push_back(res);
+    }
+    for (int i = 0; i < s.length() - index; i++) {
+        if (isPalindrome(s, index, index + i)) {
+            res.push_back(s.substr(index, i + 1));
+            partitionHelp(ans, res, index + i + 1, s);
+            res.pop_back();
+        }
+    }
+}
+vector<vector<string>> partition(string s) {
+    vector<vector<string>> ans;
+    vector<string> res;
+    if (s.empty()) return ans;
+    partitionHelp(ans, res, 0, s);
+    return ans;
+}
+
+//132. Palindrome Partitioning II
+int minCut(string s) {
+    int n = (int)s.length();
+    vector<int> cuts(n + 1);
+    for (int i = 0; i <= n; i++) cuts[i] = i - 1;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; i - j >= 0 && i + j < n && s[i - j] == s[i + j]; j++) {
+            if (cuts[i - j] + 1 < cuts[i + j + 1]) {
+                cuts[i + j + 1] = cuts[i - j] + 1;
+            }
+        }
+        for (int j = 1; i - j + 1 >= 0 && i + j < n && s[i - j + 1] == s[i + j]; j++){
+            if (cuts[i - j + 1] + 1 < cuts[i + j + 1]) {
+                cuts[i + j + 1] = cuts[i - j + 1] + 1;
+            }
+        }
+    }
+    return cuts[n];
+}
+
+//133. Clone Graph
+UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+    if (node == NULL) return NULL;
+    unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> dict;
+    UndirectedGraphNode* copyNode = new UndirectedGraphNode(node->label);
+    dict[node] = copyNode;
+    queue<UndirectedGraphNode*> q;
+    q.push(node);
+    while (!q.empty()) {
+        UndirectedGraphNode* cur = q.front();
+        for (UndirectedGraphNode* neighbor : cur->neighbors) {
+            if (dict.find(neighbor) == dict.end()) {
+                UndirectedGraphNode* tmp = new UndirectedGraphNode(neighbor->label);
+                dict[neighbor] = tmp;
+                q.push(neighbor);
+            }
+            dict[cur]->neighbors.push_back(dict[neighbor]);
+        }
+        q.pop();
+    }
+    return copyNode;
+}
+
+//134. Gas Station
+int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+    int total = 0, restGas = 0, start = 0;
+    for (int i = 0; i < gas.size(); i++) {
+        restGas += gas[i] - cost[i];
+        total += gas[i] - cost[i];
+        if (restGas < 0) {
+            restGas = 0;
+            start = i + 1;
+        }
+    }
+    return total < 0 ? -1 : start;
+}
+
+//135. Candy
+int candy(vector<int>& ratings) {
+    int len = (int)ratings.size();
+    if (len <= 1) return len;
+    vector<int> nums(len, 1);
+    for (int i = 1; i < len; i++) {
+        if (ratings[i] > ratings[i - 1]) {
+            nums[i] = nums[i - 1] + 1;
+        }
+    }
+    int ans = nums[len - 1];
+    for (int i = len - 1; i > 0; i--) {
+        if (ratings[i - 1] > ratings[i]) {
+            nums[i - 1] = max(nums[i] + 1, nums[i - 1]);
+        }
+        ans += nums[i - 1];
+    }
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
+    cout<<minCut("aab");
     return 0;
 }
