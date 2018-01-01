@@ -12,6 +12,7 @@
 #include <queue>
 #include <stack>
 #include <set>
+#include <unordered_set>
 
 using namespace std;
 
@@ -45,6 +46,12 @@ struct UndirectedGraphNode {
     int label;
     vector<UndirectedGraphNode *> neighbors;
     UndirectedGraphNode(int x) : label(x) {};
+};
+
+struct RandomListNode {
+    int label;
+    RandomListNode *next, *random;
+    RandomListNode(int x) : label(x), next(NULL), random(NULL) {}
 };
 
 struct Coordinate {
@@ -2569,6 +2576,60 @@ int candy(vector<int>& ratings) {
         ans += nums[i - 1];
     }
     return ans;
+}
+
+//138. Copy List with Random Pointer
+RandomListNode *copyRandomList(RandomListNode *head) {
+    if (head == NULL) return NULL;
+    RandomListNode* copyHead = new RandomListNode(head->label);
+    unordered_map<RandomListNode*, RandomListNode*> dict;
+    dict[head] = copyHead;
+    RandomListNode *p = head, *q = copyHead;
+    while (p->next != NULL) {
+        if (dict.find(p->next) == dict.end()) {
+            q->next = new RandomListNode(p->next->label);
+            dict[p->next] = q->next;
+        } else {
+            q->next = dict[p->next];
+        }
+        if (p->random != NULL) {
+            if (dict.find(p->random) == dict.end()) {
+                q->random = new RandomListNode(p->random->label);
+                dict[p->random] = q->random;
+            } else {
+                q->random = dict[p->random];
+            }
+        }
+        p = p->next;
+        q = q->next;
+    }
+    if (p->random != NULL) {
+        q->random = dict[p->random];
+    }
+    return copyHead;
+}
+
+//139. Word Break
+bool wordBreak(string s, vector<string>& wordDict) {
+    unordered_set<string> wordSet;
+    int n = (int)s.size();
+    for (int i = 0; i < wordDict.size(); i++) {
+        wordSet.insert(wordDict[i]);
+    }
+    vector<bool> dp(n + 1, false);
+    dp[0] = true;
+    for (int i = 1; i <= n; i++) {
+        for (int j = i; j >= 0; j--) {
+            if (dp[j]) {
+                string word = s.substr(j, i - j);
+                if (wordSet.find(word) != wordSet.end()) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+    }
+    return dp[n];
 }
 
 int main(int argc, const char * argv[]) {
