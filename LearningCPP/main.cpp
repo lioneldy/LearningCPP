@@ -2632,7 +2632,139 @@ bool wordBreak(string s, vector<string>& wordDict) {
     return dp[n];
 }
 
+//140. Word Break II
+vector<string> combineWord(string word, vector<string> ans) {
+    for (int i = 0; i < ans.size(); i++) {
+        ans[i] = ans[i] + " " + word;
+    }
+    return ans;
+}
+vector<string> wordBreakHelp(string s, unordered_set<string> wordDict, unordered_map<string, vector<string>> &mp) {
+    if (mp.find(s) != mp.end()) {
+        return mp[s];
+    }
+    vector<string> ans;
+    if (wordDict.find(s) != wordDict.end()) {
+        ans.push_back(s);
+    }
+    for (int i = 1; i < s.size(); i++) {
+        string word = s.substr(i);
+        if (wordDict.find(word) != wordDict.end()) {
+            string rem = s.substr(0, i);
+            vector<string> tmp = combineWord(word, wordBreakHelp(rem, wordDict, mp));
+            ans.insert(ans.end(), tmp.begin(), tmp.end());
+        }
+    }
+    mp[s] = ans;
+    return ans;
+}
+vector<string> wordBreakII(string s, vector<string>& wordDict) {
+    unordered_set<string> wordSet;
+    unordered_map<string, vector<string>> mp;
+    vector<string> ans;
+    for (int i = 0; i < wordDict.size(); i++) {
+        wordSet.insert(wordDict[i]);
+    }
+    ans = wordBreakHelp(s, wordSet, mp);
+    return ans;
+}
+
+//142. Linked List Cycle II
+ListNode *detectCycle(ListNode *head) {
+    ListNode *fast = head, *slow = head;
+    while (fast != NULL && fast->next != NULL) {
+        fast = fast->next->next;
+        slow = slow->next;
+        if (fast == slow) {
+            ListNode *node = head;
+            while (node != slow) {
+                slow = slow->next;
+                node = node->next;
+            }
+            return node;
+        }
+    }
+    return NULL;
+}
+
+//143. Reorder List
+void reorderList(ListNode* head) {
+    if (head == NULL || head->next == NULL || head->next->next == NULL) return;
+    ListNode *slow = head, *fast = head;
+    while (fast != NULL && fast->next != NULL) {
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+    ListNode *cur = slow->next;
+    slow->next = NULL;
+    ListNode *pre = NULL;
+    ListNode *tmp = NULL;
+    while (cur != NULL) {
+        tmp = cur->next;
+        cur->next = pre;
+        pre = cur;
+        cur = tmp;
+    }
+    cur = head;
+    tmp = cur->next;
+    while (pre != NULL) {
+        cur->next = pre;
+        cur = pre->next;
+        pre->next = tmp;
+        pre = cur;
+        cur = tmp;
+        tmp = tmp->next;
+    }
+}
+
+//144. Binary Tree Preorder Traversal
+vector<int> preorderTraversal(TreeNode* root) {
+    vector<int> ans;
+    stack<TreeNode*> s;
+    TreeNode *p = root;
+    while (!s.empty() || p != NULL) {
+        while (p != NULL) {
+            ans.push_back(p->val);
+            s.push(p);
+            p = p->left;
+        }
+        if (!s.empty()) {
+            p = s.top();
+            s.pop();
+            p = p->right;
+        }
+    }
+    return ans;
+}
+
+//145. Binary Tree Postorder Traversal
+vector<int> postorderTraversal(TreeNode* root) {
+    vector<int> ans;
+    stack<TreeNode*> s;
+    TreeNode *p = root;
+    TreeNode *lastVisit = NULL;
+    while (p != NULL) {
+        s.push(p);
+        p = p->left;
+    }
+    while (!s.empty()) {
+        p = s.top();
+        s.pop();
+        if (p->right == NULL || p->right == lastVisit) {
+            ans.push_back(p->val);
+            lastVisit = p;
+        } else {
+            s.push(p);
+            p = p->right;
+            while (p != NULL) {
+                s.push(p);
+                p = p->left;
+            }
+        }
+    }
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
-    cout<<minCut("aab");
     return 0;
 }
