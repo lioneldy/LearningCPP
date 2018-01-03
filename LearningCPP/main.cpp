@@ -2970,8 +2970,78 @@ int maxProduct(vector<int>& nums) {
     return maxP;
 }
 
+//153. Find Minimum in Rotated Sorted Array
+int findMin(vector<int> &num) {
+    int start = 0, end = (int)num.size() - 1;
+    while (start < end) {
+        if (num[start] < num[end]) return num[start];
+        int mid = (start + end) / 2;
+        if (num[start] < num[mid]) {
+            start = mid + 1;
+        } else {
+            end = mid;
+        }
+    }
+    return num[start];
+}
+
+//154. Find Minimum in Rotated Sorted Array II
+int findMinII(vector<int> &num) {
+    int start = 0, end = (int)num.size() - 1;
+    while (start < end) {
+        if (num[start] == num[end]) {
+            end--;
+            continue;
+        }
+        if (num[start] <= num[end]) return num[start];
+        int mid = (start + end) / 2;
+        if (num[start] <= num[mid]) {
+            start = mid + 1;
+        } else {
+            end = mid;
+        }
+    }
+    return num[start];
+}
+
+//162. Find Peak Element
+int findPeakElement(vector<int>& nums) {
+    if (nums.size() < 2) return 0;
+    for (int i = 0; i < nums.size() - 1; i++)
+        if (nums[i] > nums[i + 1]) return i;
+    return (int)nums.size() - 1;
+}
+
+//164. Maximum Gap
+int maximumGap(vector<int>& nums) {
+    if (nums.size() < 2) return 0;
+    sort(nums.begin(), nums.end());
+    int maxNum = 0;
+    for (int i = 1; i < nums.size(); i++)
+        maxNum = max(maxNum, nums[i] - nums[i - 1]);
+    return maxNum;
+}
+
+//165. Compare Version Numbers
+int compareVersion(string version1, string version2) {
+    int i = 0, j = 0;
+    int m = (int)version1.length(), n = (int)version2.length();
+    while (i < m && j < n) {
+        int num1 = 1, num2 = 1;
+        while (i + num1 < m && version1[i + num1] != '.') num1++;
+        while (j + num2 < n && version2[j + num2] != '.') num2++;
+        if (stoi(version1.substr(i, num1)) < stoi(version2.substr(j, num2))) return -1;
+        if (stoi(version1.substr(i, num1)) > stoi(version2.substr(j, num2))) return 1;
+        i += num1 + 1;
+        j += num2 + 1;
+    }
+    while (i < m && (version1[i] == '0' || version1[i] == '.')) i++;
+    while (j < n && (version2[j] == '0' || version2[j] == '.')) j++;
+    if (i < m) return 1;
+    if (j < n) return -1;
+    return 0;
+}
+
 int main(int argc, const char * argv[]) {
-    vector<int> nums = {1,0,-1,2,3,-5,-2};
-    cout<<maxProduct(nums);
     return 0;
 }
