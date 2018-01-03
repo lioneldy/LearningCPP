@@ -2900,6 +2900,78 @@ int maxPoints(vector<Point>& points) {
     return maxNum;
 }
 
+//150. Evaluate Reverse Polish Notation
+int evalRPN(vector<string>& tokens) {
+    stack<int> s;
+    for (auto tmp : tokens) {
+        int curNum = 0;
+        if (isdigit(tmp.back())) {
+            curNum = stoi(tmp);
+        } else {
+            int num1 = s.top();
+            s.pop();
+            int num2 = s.top();
+            s.pop();
+            if (tmp == "+") {
+                curNum = num2 + num1;
+            } else if (tmp == "-") {
+                curNum = num2 - num1;
+            } else if (tmp == "*") {
+                curNum = num2 * num1;
+            } else {
+                curNum = num2 / num1;
+            }
+        }
+        s.push(curNum);
+    }
+    return s.top();
+}
+
+//151. Reverse Words in a String
+void reverseWords(string &s) {
+    string ans = "";
+    for (int i = (int)s.length(); i > 0; i--) {
+        for (int j = i - 1; j < s.length(); j++) {
+            if (s[j] == ' ') {
+                if (i == s.length()) {
+                    ans = ans + s.substr(j + 1, i - j - 1);
+                } else {
+                    ans = ans + " " + s.substr(j + 1, i - j - 1);
+                }
+            }
+        }
+    }
+    s = ans;
+}
+
+//152. Maximum Product Subarray
+int maxProduct(vector<int>& nums) {
+    int maxP = INT_MIN;
+    vector<int> dp(nums.size(), INT_MIN);
+    vector<int> negativeDp(nums.size(), 0);
+    for (int i = 0; i < nums.size(); i++) {
+        if (i == 0) {
+            dp[i] = nums[i];
+            negativeDp[i] = min(nums[i], 0);
+            maxP = dp[i];
+            continue;
+        }
+        if (nums[i] == 0) {
+            dp[i] = negativeDp[i];
+        } else if (nums[i] > 0) {
+            dp[i] = max(nums[i], nums[i] * dp[i - 1]);
+            negativeDp[i] = min(nums[i] * negativeDp[i - 1], 0);
+        } else {
+            dp[i] = max(nums[i], nums[i] * negativeDp[i - 1]);
+            negativeDp[i] = min(nums[i], nums[i] * dp[i - 1]);
+        }
+        if (dp[i] > maxP) maxP = dp[i];
+    }
+    return maxP;
+}
+
 int main(int argc, const char * argv[]) {
+    vector<int> nums = {1,0,-1,2,3,-5,-2};
+    cout<<maxProduct(nums);
     return 0;
 }
