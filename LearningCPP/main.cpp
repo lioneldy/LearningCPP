@@ -13,6 +13,7 @@
 #include <stack>
 #include <set>
 #include <unordered_set>
+#include <list>
 
 using namespace std;
 
@@ -54,10 +55,11 @@ struct RandomListNode {
     RandomListNode(int x) : label(x), next(NULL), random(NULL) {}
 };
 
-struct Coordinate {
+struct Point {
     int x;
     int y;
-    Coordinate(int a, int b) : x(a), y(b) {}
+    Point() : x(0), y(0) {}
+    Point(int a, int b) : x(a), y(b) {}
 };
 
 //2. Add Two Numbers
@@ -294,8 +296,8 @@ int threeSumClosest(vector<int>& nums, int target) {
 }
 
 //最大公约数
-int gcd(int a, int b) {
-    return (a % b == 0) ? b : gcd(b, a % b);
+int getGcd(int a, int b) {
+    return (a % b == 0) ? b : getGcd(b, a % b);
 }
 
 //全排列算法
@@ -2407,7 +2409,7 @@ int sumNumbers(TreeNode* root) {
 }
 
 //130. Surrounded Regions
-bool isCoordinateValid(Coordinate a, int m, int n) {
+bool isCoordinateValid(Point a, int m, int n) {
     if (a.x < 0 || a.x >= m || a.y < 0 || a.y >= n) {
         return false;
     } else return true;
@@ -2417,31 +2419,31 @@ void solveBFS(vector<vector<bool>> &visited, vector<vector<bool>> &surrounded, v
     bool flag = false;
     visited[i][j] = true;
     tmp[i][j] = false;
-    queue<Coordinate> q;
-    q.push(Coordinate(i, j));
+    queue<Point> q;
+    q.push(Point(i, j));
     while (!q.empty()) {
-        Coordinate dot = q.front();
+        Point dot = q.front();
         if (dot.x == 0 || dot.x == m - 1 || dot.y == 0 || dot.y == n - 1) {
             flag = true;
         }
-        if (isCoordinateValid(Coordinate(dot.x + 1, dot.y), m, n) && !visited[dot.x + 1][dot.y] && board[dot.x + 1][dot.y] == 'O') {
+        if (isCoordinateValid(Point(dot.x + 1, dot.y), m, n) && !visited[dot.x + 1][dot.y] && board[dot.x + 1][dot.y] == 'O') {
             tmp[dot.x + 1][dot.y] = false;
-            q.push(Coordinate(dot.x + 1, dot.y));
+            q.push(Point(dot.x + 1, dot.y));
             visited[dot.x + 1][dot.y] = true;
         }
-        if (isCoordinateValid(Coordinate(dot.x, dot.y + 1), m, n) && !visited[dot.x][dot.y + 1] && board[dot.x][dot.y + 1] == 'O') {
+        if (isCoordinateValid(Point(dot.x, dot.y + 1), m, n) && !visited[dot.x][dot.y + 1] && board[dot.x][dot.y + 1] == 'O') {
             tmp[dot.x][dot.y + 1] = false;
-            q.push(Coordinate(dot.x, dot.y + 1));
+            q.push(Point(dot.x, dot.y + 1));
             visited[dot.x][dot.y + 1] = true;
         }
-        if (isCoordinateValid(Coordinate(dot.x - 1, dot.y), m, n) && !visited[dot.x - 1][dot.y] && board[dot.x - 1][dot.y] == 'O') {
+        if (isCoordinateValid(Point(dot.x - 1, dot.y), m, n) && !visited[dot.x - 1][dot.y] && board[dot.x - 1][dot.y] == 'O') {
             tmp[dot.x - 1][dot.y] = false;
-            q.push(Coordinate(dot.x - 1, dot.y));
+            q.push(Point(dot.x - 1, dot.y));
             visited[dot.x - 1][dot.y] = true;
         }
-        if (isCoordinateValid(Coordinate(dot.x, dot.y - 1), m, n) && !visited[dot.x][dot.y - 1] && board[dot.x][dot.y - 1] == 'O') {
+        if (isCoordinateValid(Point(dot.x, dot.y - 1), m, n) && !visited[dot.x][dot.y - 1] && board[dot.x][dot.y - 1] == 'O') {
             tmp[dot.x][dot.y - 1] = false;
-            q.push(Coordinate(dot.x, dot.y - 1));
+            q.push(Point(dot.x, dot.y - 1));
             visited[dot.x][dot.y - 1] = true;
         }
         q.pop();
@@ -2763,6 +2765,139 @@ vector<int> postorderTraversal(TreeNode* root) {
         }
     }
     return ans;
+}
+
+//146. LRU Cache
+class LRUCache {
+public:
+    LRUCache(int capacity) : size(capacity) {}
+    
+    int get(int key) {
+        auto ite = cache.find(key);
+        if (ite == cache.end()) return -1;
+        lastUsed.splice(lastUsed.begin(), lastUsed, ite->second);
+        return ite->second->second;
+    }
+    
+    void put(int key, int value) {
+        if (cache.find(key) != cache.end()) {
+            auto ite = cache.find(key);
+            ite->second->second = value;
+            lastUsed.splice(lastUsed.begin(), lastUsed, ite->second);
+            return;
+        }
+        if (cache.size() == size) {
+            cache.erase(lastUsed.back().first);
+            lastUsed.pop_back();
+        }
+        lastUsed.emplace_front(key, value);
+        cache[key] = lastUsed.begin();
+    }
+private:
+    unordered_map<int, list<pair<int, int>>::iterator> cache;
+    list<pair<int, int>> lastUsed;
+    size_t size;
+};
+
+//147. Insertion Sort List
+ListNode* insertionSortList(ListNode* head) {
+    ListNode *preHead = new ListNode(0);
+    preHead->next = head;
+    ListNode *cur = head;
+    if (cur == NULL) return NULL;
+    ListNode *p = cur->next;
+    while (p != NULL) {
+        ListNode *pre = preHead;
+        while (pre->next != p && pre->next->val <= p->val) {
+            pre = pre->next;
+        }
+        if (pre->next != p) {
+            cur->next = p->next;
+            p->next = pre->next;
+            pre->next = p;
+        } else cur = p;
+        p = cur->next;
+    }
+    return preHead->next;
+}
+
+//148. Sort List
+ListNode* split(ListNode* head, int n) {
+    for (int i = 1; head != NULL && i < n; i++) head = head->next;
+    if (head == NULL) return NULL;
+    ListNode *nextHead = head->next;
+    head->next = NULL;
+    return nextHead;
+}
+ListNode* merge(ListNode* l1, ListNode* l2, ListNode* head) {
+    ListNode *cur = head;
+    while (l1 != NULL && l2 != NULL) {
+        if (l1->val < l2->val) {
+            cur->next = l1;
+            l1 = l1->next;
+        } else {
+            cur->next = l2;
+            l2 = l2->next;
+        }
+        cur = cur->next;
+    }
+    cur->next = l1 == NULL ? l2 : l1;
+    while (cur->next != NULL) cur = cur->next;
+    return cur;
+}
+ListNode* sortList(ListNode* head) {
+    int length = 0;
+    ListNode* preHead = new ListNode(0);
+    preHead->next = head;
+    while (head != NULL) {
+        length++;
+        head = head->next;
+    }
+    ListNode *left = NULL, *right = NULL, *cur = NULL, *tail = NULL;
+    for (int step = 1; step < length; step <<= 1) {
+        tail = preHead;
+        cur = preHead->next;
+        while (cur != NULL) {
+            left = cur;
+            right = split(left, step);
+            cur = split(right, step);
+            tail = merge(left, right, tail);
+        }
+    }
+    return preHead->next;
+}
+
+//149. Max Points on a Line
+struct hashfunc {
+    size_t operator() (const pair<int,int>& l) const {
+        return l.first ^ l.second;
+    }
+};
+int maxPoints(vector<Point>& points) {
+    int maxNum = 0;
+    for (int i = 0; i < points.size(); i++) {
+        int samePoint = 1;
+        unordered_map<pair<int, int>, int, hashfunc> mp;
+        for (int j = i + 1; j < points.size(); j++) {
+            if (points[i].x == points[j].x && points[i].y == points[j].y) {
+                samePoint++;
+            } else if (points[i].x == points[j].x) {
+                mp[make_pair(1, 0)]++;
+            } else {
+                int a = points[j].y - points[i].y;
+                int b = points[j].x - points[i].x;
+                int gcd = getGcd(a, b);
+                a /= gcd;
+                b /= gcd;
+                mp[make_pair(a, b)]++;
+            }
+        }
+        maxNum = max(maxNum, samePoint);
+        for (auto it = mp.begin(); it != mp.end(); it++) {
+            maxNum = max(maxNum, it->second + samePoint);
+        }
+    }
+    return maxNum;
 }
 
 int main(int argc, const char * argv[]) {
