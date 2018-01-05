@@ -3042,6 +3042,101 @@ int compareVersion(string version1, string version2) {
     return 0;
 }
 
+//166. Fraction to Recurring Decimal
+string fractionToDecimal(long long numerator, long long denominator) {
+    if (numerator == 0) return "0";
+    string ans = "";
+    if ((numerator ^ denominator) < 0) ans += "-";
+    numerator = abs(numerator);
+    denominator = abs(denominator);
+    ans += to_string(numerator / denominator);
+    long long res = numerator % denominator;
+    if (res == 0) return ans;
+    ans += ".";
+    unordered_map<long long, int> mp;
+    while (res) {
+        if (mp[res] > 0) {
+            ans.insert(mp[res], "(");
+            ans += ")";
+            return ans;
+        }
+        mp[res] = (int)ans.size();
+        res *= 10;
+        ans += to_string(res / denominator);
+        res %= denominator;
+    }
+    return ans;
+}
+
+//173. Binary Search Tree Iterator
+class BSTIterator {
+public:
+    BSTIterator(TreeNode *root) {
+        stack<TreeNode*> s;
+        TreeNode *p = root;
+        while (!s.empty() || p != NULL) {
+            while (p != NULL) {
+                s.push(p);
+                p = p->left;
+            }
+            if (!s.empty()) {
+                p = s.top();
+                s.pop();
+                q.push(p->val);
+                p = p->right;
+            }
+        }
+    }
+    
+    /** @return whether we have a next smallest number */
+    bool hasNext() {
+        return !q.empty();
+    }
+    
+    /** @return the next smallest number */
+    int next() {
+        int ans = q.front();
+        q.pop();
+        return ans;
+    }
+private:
+    queue<int> q;
+};
+
+//174. Dungeon Game
+int calculateMinimumHP(vector<vector<int>>& dungeon) {
+    int m = (int)dungeon.size();
+    int n = (int)dungeon[0].size();
+    vector<int> dp(n + 1, INT_MAX);
+    dp[n - 1] = 1;
+    for (int i = m - 1; i >= 0; i--) {
+        for (int j = n - 1; j >= 0; j--) {
+            dp[j] = min(dp[j], dp[j + 1]) - dungeon[i][j];
+            dp[j] = max(1, dp[j]);
+        }
+    }
+    return dp[0];
+}
+
+//179. Largest Number
+bool largestNumberHelp (int a, int b) {
+    string aStr = to_string(a);
+    string bStr = to_string(b);
+    return aStr + bStr > bStr + aStr;
+}
+string largestNumber(vector<int>& nums) {
+    sort(nums.begin(), nums.end(), largestNumberHelp);
+    string ans = "";
+    for (int i = 0; i < nums.size(); i++) {
+        ans += to_string(nums[i]);
+    }
+    int j = 0;
+    while (j < ans.size() - 1 && ans[j] == '0') j++;
+    return ans.substr(j);
+}
+
 int main(int argc, const char * argv[]) {
+    vector<int> nums = {121, 12};
+    cout<<largestNumber(nums);
     return 0;
 }
