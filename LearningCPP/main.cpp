@@ -3135,8 +3135,73 @@ string largestNumber(vector<int>& nums) {
     return ans.substr(j);
 }
 
+//187. Repeated DNA Sequences
+vector<string> findRepeatedDnaSequences(string s) {
+    vector<string> ans;
+    unordered_map<string, int> mp;
+    for (int i = 0; i + 10 <= s.length(); i++) {
+        string tmp = s.substr(i, 10);
+        mp[tmp]++;
+        if (mp[tmp] == 2) ans.push_back(tmp);
+    }
+    return ans;
+}
+
+//188. Best Time to Buy and Sell Stock IV
+int quickSolve(vector<int> prices) {
+    int profit = 0;
+    for (int i = 1; i < prices.size(); i++) {
+        profit += prices[i] > prices[i - 1] ? prices[i] - prices[i - 1] : 0;
+    }
+    return profit;
+}
+int maxProfit(int k, vector<int>& prices) {
+    if (k == 0) return 0;
+    if (k > prices.size() / 2) {
+        return quickSolve(prices);
+    }
+    vector<int> release(k, 0);
+    vector<int> hold(k, INT_MIN);
+    for (auto price : prices) {
+        for (int i = k - 1; i > 0; i--) {
+            release[i] = max(release[i], hold[i] + price);
+            hold[i] = max(hold[i], release[i - 1] - price);
+        }
+        release[0] = max(release[0], hold[0] + price);
+        hold[0] = max(hold[0], -price);
+    }
+    return release[k - 1];
+}
+
+//189. Rotate Array
+void rotate(vector<int>& nums, int k) {
+    int n = (int)nums.size();
+    k %= n;
+    reverse(nums.begin(), nums.begin() + n - k) ;
+    reverse(nums.begin() + n - k, nums.end());
+    reverse(nums.begin(), nums.end());
+}
+
+//190. Reverse Bits
+uint32_t reverseBits(uint32_t n) {
+    uint32_t m = 0;
+    for (int i = 0; i++ < 32; n >>= 1) {
+        m <<= 1;
+        m |= n & 1;
+    }
+    return m;
+}
+
+//191. Number of 1 Bits
+int hammingWeight(uint32_t n) {
+    int cnt = 0;
+    while (n) {
+        if (n & 1) cnt++;
+        n >>= 1;
+    }
+    return cnt;
+}
+
 int main(int argc, const char * argv[]) {
-    vector<int> nums = {121, 12};
-    cout<<largestNumber(nums);
     return 0;
 }
