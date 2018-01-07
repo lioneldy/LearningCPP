@@ -3202,6 +3202,73 @@ int hammingWeight(uint32_t n) {
     return cnt;
 }
 
+//198. House Robber
+int rob(vector<int>& nums) {
+    int n = (int)nums.size();
+    int maxNum = 0;
+    if (n == 0) return 0;
+    vector<int> dp(n, 0);
+    for (int i = 0; i < n; i++) {
+        if (i < 2) {
+            dp[i] = max(dp[0], nums[i]);
+        } else {
+            dp[i] += dp[i - 2] + nums[i];
+            dp[i] = max(dp[i], dp[i - 1]);
+        }
+        maxNum = max(dp[i], maxNum);
+    }
+    return maxNum;
+}
+
+//199. Binary Tree Right Side View
+vector<int> rightSideView(TreeNode* root) {
+    vector<int> ans;
+    queue<TreeNode*> q;
+    if (root != NULL) q.push(root);
+    while (!q.empty()) {
+        int n = (int)q.size();
+        while (n) {
+            n--;
+            TreeNode *tmp = q.front();
+            if (tmp->left != NULL) q.push(tmp->left);
+            if (tmp->right != NULL) q.push(tmp->right);
+            if (n == 0) {
+                ans.push_back(tmp->val);
+            }
+            q.pop();
+        }
+    }
+    return ans;
+}
+
+//200. Number of Islands
+void numIsLandsHelp(vector<vector<bool>>& visited, vector<vector<char>>& grid, int i, int j, int m, int n) {
+    if (i < 0 || j < 0 || i >= m || j >= n) return;
+    if (grid[i][j] == '0') return;
+    if (visited[i][j]) return;
+    visited[i][j] = true;
+    numIsLandsHelp(visited, grid, i + 1, j, m, n);
+    numIsLandsHelp(visited, grid, i - 1, j, m, n);
+    numIsLandsHelp(visited, grid, i, j + 1, m, n);
+    numIsLandsHelp(visited, grid, i, j - 1, m, n);
+}
+int numIslands(vector<vector<char>>& grid) {
+    if (grid.empty()) return 0;
+    int m = (int)grid.size();
+    int n = (int)grid[0].size();
+    int num = 0;
+    vector<vector<bool>> visited(m, vector<bool>(n, false));
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (!visited[i][j] && grid[i][j] == '1') {
+                numIsLandsHelp(visited, grid, i, j, m, n);
+                num++;
+            }
+        }
+    }
+    return num;
+}
+
 int main(int argc, const char * argv[]) {
     return 0;
 }
