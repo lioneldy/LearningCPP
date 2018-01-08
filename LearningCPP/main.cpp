@@ -3269,6 +3269,250 @@ int numIslands(vector<vector<char>>& grid) {
     return num;
 }
 
+//201. Bitwise AND of Numbers Range
+int rangeBitwiseAnd(int m, int n) {
+    int pos = 0;
+    while (m != n) {
+        pos++;
+        m >>= 1;
+        n >>= 1;
+    }
+    return m << pos;
+}
+
+//202. Happy Number
+bool isHappy(int n) {
+    vector<int> squares = {0, 1, 4, 9, 16, 25, 36, 49, 64, 81};
+    unordered_map<int, int> mp;
+    while (mp.find(n) == mp.end()) {
+        if (n == 1) {
+            return true;
+        }
+        mp[n]++;
+        int sum = 0;
+        while (n) {
+            int tmp = n % 10;
+            sum += squares[tmp];
+            n /= 10;
+        }
+        n = sum;
+    }
+    return false;
+}
+
+//203. Remove Linked List Elements
+ListNode* removeElements(ListNode* head, int val) {
+    ListNode *preHead = new ListNode(0);
+    preHead->next = head;
+    ListNode *pre = preHead, *p = head;
+    while (p != NULL) {
+        while (p->val == val) {
+            pre->next = p->next;
+            p = p->next;
+            if (p == NULL) break;
+        }
+        if (p == NULL) break;
+        pre = p;
+        p = p->next;
+    }
+    return preHead->next;
+}
+
+//204. Count Primes
+int countPrimes(int n) {
+    if (n < 2) return 0;
+    vector<bool> isPrime(n + 1, true);
+    int count = 0;
+    for (int i = 2; i <= n; i++) {
+        if (isPrime[i] == true) {
+            count++;
+            int p = i + i;
+            while (p <= n) {
+                isPrime[p] = false;
+                p += i;
+            }
+        }
+    }
+    return count;
+}
+
+//205. Isomorphic Strings
+bool isIsomorphic(string s, string t) {
+    int n = (int)s.length();
+    vector<int> m1(256, 0), m2(256, 0);
+    for (int i = 0; i < n; ++i) {
+        if (m1[s[i]] != m2[t[i]]) return false;
+        m1[s[i]] = i + 1;
+        m2[t[i]] = i + 1;
+    }
+    return true;
+}
+
+//206. Reverse Linked List
+ListNode* reverseList(ListNode* head) {
+    ListNode *pre = NULL, *p = head;
+    while (p != NULL) {
+        ListNode *q = p->next;
+        p->next = pre;
+        pre = p;
+        p = q;
+    }
+    return pre;
+}
+
+//207. Course Schedule
+/* BFS Solution
+vector<int> computeIndegree(vector<unordered_set<int>> graph, int num) {
+    vector<int> indegree(num, 0);
+    for (int i = 0; i < graph.size(); i++)
+        for (int node : graph[i])
+            indegree[node]++;
+    return indegree;
+}
+bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
+    vector<unordered_set<int>> graph(numCourses);
+    for (int i = 0; i < prerequisites.size(); i++) {
+        graph[prerequisites[i].second].insert(prerequisites[i].first);
+    }
+    vector<int> indegree = computeIndegree(graph, numCourses);
+    for (int i = 0; i < numCourses; i++) {
+        int j = 0;
+        for (; j < numCourses; j++) {
+            if (indegree[j] == 0) {
+                break;
+            }
+        }
+        if (j == numCourses) return false;
+        indegree[j] = -1;
+        for (int neighboor : graph[j])
+            indegree[neighboor]--;
+    }
+    return true;
+}
+*/
+//DFS Solution
+bool canFinishHelp(vector<bool> &visited, vector<bool> &onpath, vector<unordered_set<int>> &graph, int course) {
+    if (visited[course]) return false;
+    onpath[course] = visited[course] = true;
+    for (int neigh : graph[course])
+        if (onpath[neigh] || canFinishHelp(visited, onpath, graph, neigh))
+            return true;
+    return onpath[course] = false;
+}
+bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
+    vector<unordered_set<int>> graph(numCourses);
+    for (auto pre : prerequisites)
+        graph[pre.second].insert(pre.first);
+    vector<bool> visited(numCourses, false), onpath(numCourses, false);
+    for (int i = 0; i < numCourses; i++)
+        if (!visited[i] && canFinishHelp(visited, onpath, graph, i))
+            return false;
+    return true;
+}
+
+//208. Implement Trie (Prefix Tree)
+class TrieNode {
+public:
+    vector<TrieNode*> next;
+    bool isWord;
+    TrieNode () {
+        next = vector<TrieNode*>(26);
+        isWord = false;
+    }
+};
+class Trie {
+    TrieNode *root;
+public:
+    /** Initialize your data structure here. */
+    Trie() {
+        root = new TrieNode();
+    }
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        TrieNode *p = root;
+        for (int i = 0; i < word.size(); i++) {
+            if (p->next[word[i] - 'a'] == NULL) {
+                p->next[word[i] - 'a'] = new TrieNode();
+            }
+            p = p->next[word[i] - 'a'];
+        }
+        p->isWord = true;
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        TrieNode *p = root;
+        for (int i = 0; i < word.size(); i++) {
+            if (p->next[word[i] - 'a'] == NULL) {
+                return false;
+            }
+            p = p->next[word[i] - 'a'];
+        }
+        return p->isWord;
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        TrieNode *p = root;
+        for (int i = 0; i < prefix.size(); i++) {
+            if (p->next[prefix[i] - 'a'] == NULL) {
+                return false;
+            }
+            p = p->next[prefix[i] - 'a'];
+        }
+        return true;
+    }
+};
+
+//209. Minimum Size Subarray Sum
+int minSubArrayLen(int s, vector<int>& nums) {
+    int i = 0, j = 0, minSub = INT_MAX;
+    int sum = 0;
+    for (; i < nums.size(); i++) {
+        sum += nums[i];
+        if (sum >= s) minSub = min(minSub, i - j + 1);
+        while (sum >= s) {
+            sum -= nums[j];
+            j++;
+            if (sum >= s) minSub = min(minSub, i - j + 1);
+        }
+    }
+    return minSub == INT_MAX ? 0 : minSub;
+}
+
+//210. Course Schedule II
+vector<int> countIndegree(vector<unordered_set<int>>& graph, int numCourses) {
+    vector<int> indegree(numCourses, 0);
+    for (int i = 0; i < graph.size(); i++)
+        for (int neigh : graph[i])
+            indegree[neigh]++;
+    return indegree;
+}
+vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+    vector<unordered_set<int>> graph(numCourses);
+    for (auto pre : prerequisites)
+        graph[pre.second].insert(pre.first);
+    vector<int> indegree = countIndegree(graph, numCourses);
+    vector<int> order;
+    for (int i = 0; i < numCourses; i++) {
+        vector<int> tmp;
+        int j = 0;
+        for (; j < numCourses; j++)
+            if (indegree[j] == 0) break;
+        if (j == numCourses) return tmp;
+        order.push_back(j);
+        indegree[j] = -1;
+        for (auto neigh : graph[j])
+            indegree[neigh]--;
+    }
+    return order;
+}
+
 int main(int argc, const char * argv[]) {
+    vector<pair<int, int>> nums;
+    nums.push_back(make_pair(1, 0));
+    nums.push_back(make_pair(0, 1));
+    findOrder(2, nums);
     return 0;
 }
