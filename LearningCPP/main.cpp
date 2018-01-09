@@ -3204,20 +3204,13 @@ int hammingWeight(uint32_t n) {
 
 //198. House Robber
 int rob(vector<int>& nums) {
-    int n = (int)nums.size();
-    int maxNum = 0;
-    if (n == 0) return 0;
-    vector<int> dp(n, 0);
-    for (int i = 0; i < n; i++) {
-        if (i < 2) {
-            dp[i] = max(dp[0], nums[i]);
-        } else {
-            dp[i] += dp[i - 2] + nums[i];
-            dp[i] = max(dp[i], dp[i - 1]);
-        }
-        maxNum = max(dp[i], maxNum);
+    int maxMoney1 = 0, maxMoney2 = 0;
+    for (int i = 0; i < nums.size(); i++) {
+        int tmp = maxMoney1;
+        maxMoney1 = max(maxMoney1, maxMoney2 + nums[i]);
+        maxMoney2 = tmp;
     }
-    return maxNum;
+    return maxMoney1;
 }
 
 //199. Binary Tree Right Side View
@@ -3509,10 +3502,108 @@ vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
     return order;
 }
 
+//211. Add and Search Word - Data structure design
+class WordDictionary {
+    TrieNode *root;
+public:
+    /** Initialize your data structure here. */
+    WordDictionary() {
+        root = new TrieNode();
+    }
+
+    /** Adds a word into the data structure. */
+    void addWord(string word) {
+        TrieNode *p = root;
+        for (int i = 0; i < word.size(); i++) {
+            if (p->next[word[i] - 'a'] == NULL) {
+                p->next[word[i] - 'a'] = new TrieNode();
+            }
+            p = p->next[word[i] - 'a'];
+        }
+        p->isWord = true;
+    }
+
+    /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
+    bool search(string word) {
+        return isMatch(root, word);
+    }
+    //212. Word Search II
+    void checkWord(vector<vector<char>>& board, vector<string>& res, string curStr, TrieNode *root, int m, int n, int i, int j) {
+        if (board[i][j] == '.') return;
+        if (root->next[board[i][j] - 'a'] == NULL) return;
+        char tmp = board[i][j];
+        curStr += tmp;
+        board[i][j] = '.';
+        if (root->next[tmp - 'a']->isWord) {
+            res.push_back(curStr);
+            root->next[tmp - 'a']->isWord = false;
+        }
+        if (i + 1 < m) checkWord(board, res, curStr, root->next[tmp - 'a'], m, n, i + 1, j);
+        if (i > 0) checkWord(board, res, curStr, root->next[tmp - 'a'], m, n, i - 1, j);
+        if (j + 1 < n) checkWord(board, res, curStr, root->next[tmp - 'a'], m, n, i, j + 1);
+        if (j > 0) checkWord(board, res, curStr, root->next[tmp - 'a'], m, n, i, j - 1);
+        board[i][j] = tmp;
+    }
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        vector<string> ans;
+        if (words.empty() || board.empty()) return ans;
+        for (auto word : words) {
+            addWord(word);
+        }
+        int m = (int)board.size();
+        int n = (int)board[0].size();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                checkWord(board, ans, "", root, m, n, i, j);
+            }
+        }
+        return ans;
+    }
+private:
+    bool isMatch(TrieNode* root, string word) {
+        if (word.empty()) return root->isWord;
+        TrieNode *p = root;
+        if (word[0] == '.') {
+            for (int i = 0; i < 26; i++)
+                if (p->next[i] != NULL && isMatch(p->next[i], word.substr(1)))
+                    return true;
+        } else {
+            if (p->next[word[0] - 'a'] == NULL) {
+                return false;
+            } else return isMatch(p->next[word[0] - 'a'], word.substr(1));
+        }
+        return false;
+    }
+};
+
+//213. House Robber II
+int robHelp(vector<int>& nums, int l, int r) {
+    int maxMoney1 = 0, maxMoney2 = 0;
+    for (int i = l; i < r; i++) {
+        int tmp = maxMoney1;
+        maxMoney1 = max(maxMoney1, maxMoney2 + nums[i]);
+        maxMoney2 = tmp;
+    }
+    return maxMoney1;
+}
+int robII(vector<int>& nums) {
+    int n = (int)nums.size();
+    if (n == 0) return 0;
+    if (n == 1) return nums[0];
+    return max(robHelp(nums, 0, n - 1), robHelp(nums, 1, n));
+}
+
+//214. Shortest Palindrome
+string shortestPalindrome(string s) {
+    int end = (int)s.size();
+    while (end > 0 && !isPalindrome(s, 0, end)) end--;
+    if (end == s.size()) return s;
+    string tmp = s.substr(end + 1);
+    reverse(tmp.begin(), tmp.end());
+    return tmp + s;
+}
+
 int main(int argc, const char * argv[]) {
-    vector<pair<int, int>> nums;
-    nums.push_back(make_pair(1, 0));
-    nums.push_back(make_pair(0, 1));
-    findOrder(2, nums);
+    cout<<shortestPalindrome("a")<<endl;
     return 0;
 }
