@@ -1429,20 +1429,13 @@ vector<vector<string>> groupAnagrams(vector<string>& strs) {
 
 //50. Pow(x, n)
 double myPow(double x, int n) {
-    if (n == 0) {
-        return 1;
-    }
+    if (n == 0) return 1;
     if (n < 0) {
-        if (n == -1) {
-            return 1 / x;
-        } else {
-            x = 1 / x;
-            return x * myPow(x, -1 - n);
-        }
+        x = 1 / x;
+        n = -n;
     }
-    if (n % 2 == 0) {
-        return myPow(x * x, n / 2);
-    } else return x * myPow(x * x, (n - 1) / 2);
+    if (n % 2 == 0) return myPow(x * x, n / 2);
+    else return x * myPow(x * x, (n - 1) / 2);
 }
 
 //51. N-Queens
@@ -3593,17 +3586,89 @@ int robII(vector<int>& nums) {
     return max(robHelp(nums, 0, n - 1), robHelp(nums, 1, n));
 }
 
-//214. Shortest Palindrome
+//214. Shortest Palindrome (KMP)
 string shortestPalindrome(string s) {
-    int end = (int)s.size();
-    while (end > 0 && !isPalindrome(s, 0, end)) end--;
-    if (end == s.size()) return s;
-    string tmp = s.substr(end + 1);
-    reverse(tmp.begin(), tmp.end());
-    return tmp + s;
+    string rs = s;
+    reverse(rs.begin(), rs.end());
+    string tmp = s + "#" + rs;
+    vector<int> next(tmp.size(), 0);
+    for (int i = 1; i < tmp.size(); i++) {
+        int j = next[i - 1];
+        while (j > 0 && tmp[i] != tmp[j]) {
+            j = next[j - 1];
+        }
+        if (tmp[i] == tmp[j]) j++;
+        next[i] = j;
+    }
+    return rs.substr(0, s.size() - next[tmp.size() - 1]) + s;
+}
+
+//216. Combination Sum III
+void combinationSum3Help(vector<vector<int>>& ans, vector<int>& res, int k, int target, int num) {
+    if (k < 0) return;
+    if (k == 0 && target == 0) {
+        ans.push_back(res);
+    }
+    for (int i = num; i < 10; i++) {
+        res.push_back(i);
+        combinationSum3Help(ans, res, k - 1, target - i, i + 1);
+        res.pop_back();
+    }
+}
+vector<vector<int>> combinationSum3(int k, int n) {
+    vector<vector<int>> ans;
+    vector<int> res;
+    combinationSum3Help(ans, res, k, n, 1);
+    return ans;
+}
+
+//220. Contains Duplicate III
+bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+    set<long long> dict;
+    for (int i = 0; i < nums.size(); i++) {
+        if (i > k) dict.erase(nums[i - k - 1]);
+        auto pos = dict.lower_bound((long long)nums[i] - t);
+        if (pos != dict.end() && *pos - nums[i] <= t) return true;
+        dict.insert(nums[i]);
+    }
+    return false;
+}
+
+//221. Maximal Square
+int maximalSquare(vector<vector<char>>& matrix) {
+    int maxSquare = 0;
+    if (matrix.empty()) return 0;
+    int m = (int)matrix.size();
+    int n = (int)matrix[0].size();
+    vector<int> left(n, 0), right(n, n), height(n, 0);
+    for (int i = 0; i < m; i++) {
+        int cur_left = 0, cur_right = n;
+        for (int j = 0; j < n; j++) {
+            if (matrix[i][j] == '1') {
+                height[j]++;
+                left[j] = max(left[j], cur_left);
+            }
+            else {
+                height[j] = 0;
+                cur_left = j + 1;
+                left[j] = 0;
+            }
+        }
+        for (int j = n - 1; j >= 0; j--) {
+            if (matrix[i][j] == '1') right[j] = min(right[j], cur_right);
+            else {
+                right[j] = n;
+                cur_right = j;
+            }
+        }
+        for (int j = 0; j < n; j++) {
+            int len = min(right[j] - left[j], height[j]);
+            maxSquare = max(maxSquare, len * len);
+        }
+    }
+    return maxSquare;
 }
 
 int main(int argc, const char * argv[]) {
-    cout<<shortestPalindrome("a")<<endl;
     return 0;
 }
