@@ -313,6 +313,12 @@ bool IsSwap(char *pszStr, int nBegin, int nEnd) {
             return false;
     return true;
 }
+bool isSwap(string& str, int start, int end) {
+    for (int i = start; i < end; i++)
+        if (str[i] == str[end])
+            return true;
+    return false;
+}
 //k表示当前选取到第几个数,m表示共有多少数.
 void AllRange(char *pszStr, int k, int m) {
     if (k == m) {
@@ -329,6 +335,21 @@ void AllRange(char *pszStr, int k, int m) {
         }
     }
 }
+//全排列算法之字符串
+void permutations(vector<string> &res, string &str, int k, int m) {
+    if (k == m) {
+        res.push_back(str);
+    } else {
+        for (int i = k; i <= m; i++) {
+            if (!isSwap(str, k, i)) {
+                swap(str[k], str[i]);
+                permutations(res, str, k + 1, m);
+                swap(str[k], str[i]);
+            }
+        }
+    }
+}
+
 
 //17. Letter Combinations of a Phone Number
 vector<string> letterCombinations(string digits) {
@@ -1275,7 +1296,7 @@ vector<vector<int>> subsets(vector<int>& nums) {
     return ans;
 }
 
-//79. Word Search
+//79. Word Search (回溯)
 bool isFound(vector<vector<char>>& board, const char* w, int i, int j) {
     int m = (int)board.size();
     int n = (int)board[0].size();
@@ -3667,6 +3688,70 @@ int maximalSquare(vector<vector<char>>& matrix) {
         }
     }
     return maxSquare;
+}
+
+//222. Count Complete Tree Nodes 递归
+int countNodes(TreeNode* root) {
+    int ld = 0, rd = 0;
+    TreeNode *p = root, *q = root;
+    while (p != NULL) {
+        p = p->left;
+        ld++;
+    }
+    while (q != NULL) {
+        q = q->right;
+        rd++;
+    }
+    if (ld == rd) return pow(2, ld) - 1;
+    return countNodes(root->left) + countNodes(root->right) + 1;
+}
+
+//223. Rectangle Area
+int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+    int left = max(A, E), right = max(min(C, G), left), bottom = max(B, F), top = max(min(D, H), bottom);
+    return (D - B)*(C - A) + (G - E)*(H - F) - (right - left)*(top - bottom);
+}
+
+//224. Basic Calculator
+int calculate(string s) {
+    stack<int> nums, opt;
+    int num = 0, ans = 0, sign = 1;
+    for (auto c : s) {
+        if (isdigit(c)) num = num * 10 + c - '0';
+        else {
+            ans += num * sign;
+            num = 0;
+            if (c == '+') sign = 1;
+            if (c == '-') sign = -1;
+            if (c == '(') {
+                nums.push(ans);
+                opt.push(sign);
+                ans = 0;
+                sign = 1;
+            }
+            if (c == ')') {
+                ans = nums.top() + opt.top() * ans;
+                nums.pop();
+                opt.pop();
+            }
+        }
+        ans += num * sign;
+    }
+    return ans;
+}
+
+//226. Invert Binary Tree
+void invertTreeHelp(TreeNode* root) {
+    if (root == NULL) return;
+    TreeNode *tmp = root->left;
+    root->left = root->right;
+    root->right = tmp;
+    invertTreeHelp(root->left);
+    invertTreeHelp(root->right);
+}
+TreeNode* invertTree(TreeNode* root) {
+    invertTreeHelp(root);
+    return root;
 }
 
 int main(int argc, const char * argv[]) {
