@@ -3754,6 +3754,238 @@ TreeNode* invertTree(TreeNode* root) {
     return root;
 }
 
+//227. Basic Calculator II
+int calculateII(string s) {
+    stack<int> nums, opt;
+    int ans = 0, num = 0, cal = 0, sign = 1;
+    for (auto c : s) {
+        if (isdigit(c)) {
+            num = num * 10 + c - '0';
+        } else {
+            if (c == ' ') continue;
+            if (cal == 0) {
+                nums.push(num);
+                num = 0;
+            } else {
+                if (cal == 1) {
+                    num = nums.top() * num;
+                    nums.pop();
+                    nums.push(num);
+                } else {
+                    num = nums.top() / num;
+                    nums.pop();
+                    nums.push(num);
+                }
+                num = 0;
+            }
+            if (c == '+') {
+                sign = 1;
+                cal = 0;
+                opt.push(sign);
+            }
+            if (c == '-') {
+                sign = -1;
+                cal = 0;
+                opt.push(sign);
+            }
+            if (c == '*') cal = 1;
+            if (c == '/') cal = 2;
+        }
+    }
+    if (cal == 1) {
+        num = nums.top() * num;
+        nums.pop();
+    }
+    if (cal == 2) {
+        num = nums.top() / num;
+        nums.pop();
+    }
+    while (!opt.empty()) {
+        ans += num * opt.top();
+        num = nums.top();
+        nums.pop();
+        opt.pop();
+    }
+    ans += num;
+    return ans;
+}
+
+//228. Summary Ranges
+vector<string> summaryRanges(vector<int>& nums) {
+    vector<string> ans;
+    if (nums.empty()) return ans;
+    int start = 0, end = 0;
+    for (int i = 1; i < nums.size(); i++) {
+        if (nums[i] == nums[end] + 1) {
+            end++;
+        } else {
+            if (start == end) {
+                ans.push_back(to_string(nums[start]));
+            } else {
+                ans.push_back(to_string(nums[start]) + "->" + to_string(nums[end]));
+            }
+            start = end = i;
+        }
+    }
+    if (start == end) {
+        ans.push_back(to_string(nums[start]));
+    } else {
+        ans.push_back(to_string(nums[start]) + "->" + to_string(nums[end]));
+    }
+    return ans;
+}
+
+//229. Majority Element II
+vector<int> majorityElementII(vector<int>& nums) {
+    if (nums.empty()) return nums;
+    vector<int> ans;
+    int cnt1 = 0, cnt2 = 0, candidate1 = 0, candidate2 = 0;
+    for (int n : nums) {
+        if (n == candidate1) cnt1++;
+        else if (n == candidate2) cnt2++;
+        else if (cnt1 == 0) {
+            candidate1 = n;
+            cnt1 = 1;
+        } else if (cnt2 == 0) {
+            candidate2 = n;
+            cnt2 = 1;
+        }
+        else {
+            cnt1--;
+            cnt2--;
+        }
+    }
+    cnt1 = 0;
+    cnt2 = 0;
+    for (int n : nums) {
+        if (n == candidate1) cnt1++;
+        if (n == candidate2) cnt2++;
+    }
+    if (cnt1 > nums.size() / 3) {
+        ans.push_back(candidate1);
+    }
+    if (candidate2 != candidate1 && cnt2 > nums.size() / 3) {
+        ans.push_back(candidate2);
+    }
+    return ans;
+}
+
+//230. Kth Smallest Element in a BST
+int kthSmallest(TreeNode* root, int k) {
+    TreeNode *p = root;
+    stack<TreeNode*> s;
+    while (!s.empty() || p != NULL) {
+        while (p != NULL) {
+            s.push(p);
+            p = p->left;
+        }
+        if (!s.empty()) {
+            p = s.top();
+            s.pop();
+            k--;
+            if (k == 0) return p->val;
+            p = p->right;
+        }
+    }
+    return 0;
+}
+
+//233. Number of Digit One
+int countDigitOne(int n) {
+    int ones = 0;
+    for (long long m = 1; m <= n; m *= 10)
+        ones += (n / m + 8) / 10 * m + (n / m % 10 == 1) * (n % m + 1);
+    return ones;
+}
+
+//234. Palindrome Linked List
+bool isPalindrome(ListNode* head) {
+    ListNode *slow = head, *fast = head;
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    ListNode *p = NULL;
+    if (fast == NULL) {
+        p = reverseList(slow);
+    } else p = reverseList(slow->next);
+    while (head != slow) {
+        if (head->val != p->val) return false;
+        head = head->next;
+        p = p->next;
+    }
+    return true;
+}
+
+//235. Lowest Common Ancestor of a Binary Search Tree 最小公共祖先
+TreeNode* lowestCommonAncestorOfBST(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if (root == NULL) return NULL;
+    if (p->val > q->val) {
+        TreeNode *tmp = q;
+        q = p;
+        p = tmp;
+    }
+    if (root->val >= p->val && root->val <= q->val) return root;
+    if (root->val < p->val) return lowestCommonAncestorOfBST(root->right, p, q);
+    else return lowestCommonAncestorOfBST(root->left, p, q);
+}
+
+//236. Lowest Common Ancestor of a Binary Tree
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if (root == NULL || root == p || root == q) return root;
+    TreeNode *left = lowestCommonAncestor(root->left, p, q);
+    TreeNode *right = lowestCommonAncestor(root->right, p, q);
+    if (left != NULL && right != NULL) return root;
+    else return left == NULL ? right : left;
+}
+
+//238. Product of Array Except Self
+vector<int> productExceptSelf(vector<int>& nums) {
+    vector<int> ans(nums.size(), 1);
+    for (int i = 1; i < nums.size(); i++) {
+        ans[i] = ans[i - 1] * nums[i - 1];
+    }
+    int tmp = 1;
+    for (int i = (int)nums.size() - 1; i > 0; i--) {
+        tmp *= nums[i];
+        ans[i - 1] *= tmp;
+    }
+    return ans;
+}
+
+//239. Sliding Window Maximum
+vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+    vector<int> ans;
+    if (nums.empty()) return ans;
+    int maxPos = 0;
+    for (int i = 0; i < k; i++) if (nums[i] >= nums[maxPos]) maxPos = i;
+    ans.push_back(nums[maxPos]);
+    for (int i = k; i < nums.size(); i++) {
+        if (nums[i] >= nums[maxPos]) maxPos = i;
+        if (i - k == maxPos) {
+            maxPos++;
+            for (int j = maxPos; j <= i; j++)
+                if (nums[j] >= nums[maxPos]) maxPos = j;
+        }
+        ans.push_back(nums[maxPos]);
+    }
+    return ans;
+}
+
+//240. Search a 2D Matrix II
+bool searchMatrixII(vector<vector<int>>& matrix, int target) {
+    if (matrix.empty()) return false;
+    int m = (int)matrix.size();
+    int n = (int)matrix[0].size();
+    int i = 0, j = n - 1;
+    while (i < m && j >= 0) {
+        if (matrix[i][j] == target) return true;
+        else if (matrix[i][j] > target) j--;
+        else i++;
+    }
+    return false;
+}
+
 int main(int argc, const char * argv[]) {
     return 0;
 }
