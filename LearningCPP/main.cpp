@@ -3986,6 +3986,165 @@ bool searchMatrixII(vector<vector<int>>& matrix, int target) {
     return false;
 }
 
+//241. Different Ways to Add Parentheses
+vector<int> diffWaysToCompute(string input) {
+    vector<int> ans;
+    for (int i = 0; i < input.size(); i++) {
+        if (input[i] == '+' || input[i] == '-' || input[i] == '*') {
+            vector<int> res1 = diffWaysToCompute(input.substr(0, i));
+            vector<int> res2 = diffWaysToCompute(input.substr(i + 1));
+            for (int n1 : res1) {
+                for (int n2 : res2) {
+                    if (input[i] == '+') {
+                        ans.push_back(n1 + n2);
+                    } else if (input[i] == '-') {
+                        ans.push_back(n1 - n2);
+                    } else {
+                        ans.push_back(n1 * n2);
+                    }
+                }
+            }
+        }
+    }
+    if (ans.empty()) {
+        ans.push_back(atoi(input.c_str()));
+    }
+    return ans;
+}
+
+//242. Valid Anagram
+bool isAnagram(string s, string t) {
+    vector<int> dict(256, 0);
+    if (s.size() != t.size()) return false;
+    for (auto c : s) dict[c]++;
+    for (auto c : t) {
+        dict[c]--;
+        if (dict[c] < 0) return false;
+    }
+    return true;
+}
+
+//257. Binary Tree Paths
+void binaryTreePathsHelp(vector<string>& ans, string str, TreeNode* root) {
+    if (root == NULL) return;
+    str += "->" + to_string(root->val);
+    if (root->left == NULL && root->right == NULL) ans.push_back(str);
+    if (root->left != NULL) binaryTreePathsHelp(ans, str, root->left);
+    if (root->right != NULL) binaryTreePathsHelp(ans, str, root->right);
+}
+vector<string> binaryTreePaths(TreeNode* root) {
+    vector<string> ans;
+    if (root == NULL) return ans;
+    string str = to_string(root->val);
+    if (root->left == NULL && root->right == NULL) ans.push_back(str);
+    if (root->left != NULL) binaryTreePathsHelp(ans, str, root->left);
+    if (root->right != NULL) binaryTreePathsHelp(ans, str, root->right);
+    return ans;
+}
+
+//258. Add Digits
+int addDigits(int num) {
+    while (num / 10 != 0) {
+        int tmp = 0;
+        while (num) {
+            tmp += num % 10;
+            num /= 10;
+        }
+        num = tmp;
+    }
+    return num;
+}
+
+//260. Single Number III
+vector<int> singleNumber(vector<int>& nums) {
+    if (nums.size() < 2) return nums;
+    vector<int> ans;
+    int x = 0;
+    for (int n : nums) x ^= n;
+    int n1 = 0, n2 = 0;
+    x &= -x;
+    for (int n : nums) {
+        if (x ^ n) {
+            n1 ^= n;
+        } else n2 ^= n;
+    }
+    if (n1 != n2) {
+        ans.push_back(n1);
+        ans.push_back(n2);
+    }
+    return ans;
+}
+
+//263. Ugly Number
+bool isUgly(int num) {
+    if (num == 0) return false;
+    while (num % 2 == 0) num /= 2;
+    while (num % 3 == 0) num /= 3;
+    while (num % 5 == 0) num /= 5;
+    if (num < 7) return true;
+    else return false;
+}
+
+//264. Ugly Number II
+int nthUglyNumber(int n) {
+    int cnt1 = 0, cnt2 = 0, cnt3 = 0;
+    vector<int> ans(n, 0);
+    ans[0] = 1;
+    for (int i = 1; i < n; i++) {
+        ans[i] = min(ans[cnt1] * 2, min(ans[cnt2] * 3, ans[cnt3] * 5));
+        if (ans[i] == ans[cnt1] * 2) cnt1++;
+        if (ans[i] == ans[cnt2] * 3) cnt2++;
+        if (ans[i] == ans[cnt3] * 5) cnt3++;
+    }
+    return ans[n - 1];
+}
+
+//268. Missing Number
+int missingNumber(vector<int>& nums) {
+    int n = (int)nums.size(), ans = 0;
+    for (int i = 0; i < n; i++) {
+        while (nums[i] != i && nums[i] < n) {
+            swap(nums[i], nums[nums[i]]);
+        }
+        if (nums[i] == n) ans = i;
+    }
+    return ans;
+}
+
+//274. H-Index
+int hIndex(vector<int>& citations) {
+    sort(citations.begin(), citations.end());
+    int h = 0;
+    for (int i = (int)citations.size() - 1; i >= 0; i--) {
+        h++;
+        if (h > citations[i]) return h - 1;
+    }
+    return h;
+}
+
+//279. Perfect Squares
+int numSquares(int n) {
+    vector<int> dp(n + 1, INT_MAX);
+    for (int i = 0; i <= n; i++) {
+        for (int j = 1; j * j <= i; j++) {
+            if (i == j * j) dp[i] = 1;
+            else dp[i] = min(dp[i], dp[j * j] + dp[i - j * j]);
+        }
+    }
+    return dp[n];
+}
+
+//283. Move Zeroes
+void moveZeroes(vector<int>& nums) {
+    int pos = 0;
+    while (pos < nums.size() && nums[pos] != 0) pos++;
+    for (int i = pos + 1; i < nums.size(); i++)
+        if (nums[i] != 0)
+            nums[pos++] = nums[i];
+    while (pos < nums.size()) nums[pos++] = 0;
+}
+
 int main(int argc, const char * argv[]) {
+    cout<<numSquares(12)<<endl;
     return 0;
 }
