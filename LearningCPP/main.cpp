@@ -4212,7 +4212,7 @@ int kmp(string str, string p, vector<int>& next) {
     return -1;
 }
 
-//295. Find Median from Data Stream
+//295. Find Median from Data Stream 中位数
 class MedianFinder {
 public:
     /** initialize your data structure here. */
