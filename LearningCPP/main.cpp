@@ -14,6 +14,7 @@
 #include <set>
 #include <unordered_set>
 #include <list>
+#include <sstream>
 
 using namespace std;
 
@@ -84,9 +85,9 @@ int lengthOfLongestSubstring(string s) {
     vector<int> dictMap(256,-1);
     int m = -1;
     for (int i = 0; i < s.length(); i++) {
-            m = max(dictMap[s[i]],m);
-            dictMap[s[i]] = i;
-            maxLenth = max(i - m, maxLenth);
+        m = max(dictMap[s[i]],m);
+        dictMap[s[i]] = i;
+        maxLenth = max(i - m, maxLenth);
     }
     return maxLenth;
 }
@@ -1415,12 +1416,10 @@ void permutations(vector<vector<int>> &res, vector<int> &nums, int k, int m) {
     if (k == m) {
         res.push_back(nums);
     } else {
-        for (int i = k; i <= m; i++) {
-            if (nums[k] != nums[i]) {
-                swap(nums[k], nums[i]);
-                permutations(res, nums, k + 1, m);
-                swap(nums[k], nums[i]);
-            }
+        for (int i = k; i < m; i++) {
+            swap(nums[k], nums[i]);
+            permutations(res, nums, k + 1, m);
+            swap(nums[k], nums[i]);
         }
     }
 }
@@ -4144,7 +4143,100 @@ void moveZeroes(vector<int>& nums) {
     while (pos < nums.size()) nums[pos++] = 0;
 }
 
+//287. Find the Duplicate Number
+int findDuplicate(vector<int>& nums) {
+    int slow = nums[0], fast = nums[nums[0]];
+    while (slow != fast) {
+        slow = nums[slow];
+        fast = nums[nums[fast]];
+    }
+    fast = 0;
+    while (slow != fast) {
+        slow = nums[slow];
+        fast = nums[fast];
+    }
+    return fast;
+}
+
+//289. Game of Life
+void gameOfLife(vector<vector<int>>& board) {
+    if (board.empty()) return;
+    int m = (int)board.size();
+    int n = (int)board[0].size();
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            int cnt = 0;
+            for (int k = max(i - 1, 0); k < min(i + 2, m); k++) {
+                for (int l = max(j - 1, 0); l < min(j + 2, n); l++) {
+                    if (board[k][l] & 1) {
+                        cnt++;
+                    }
+                }
+            }
+            cnt -= board[i][j];
+            if (board[i][j] == 1 && (cnt == 3 || cnt == 2)) board[i][j] = 3;
+            if (board[i][j] == 0 && cnt == 3) board[i][j] = 2;
+        }
+    }
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++)
+            board[i][j] >>= 1;
+}
+
+//290. Word Pattern
+bool wordPattern(string pattern, string str) {
+    unordered_map<char, string> dict;
+    
+    return true;
+}
+
+//kmp算法
+vector<int> computerPrefix(string str) {
+    vector<int> next(str.size(), 0);
+    for (int i = 1; i < str.size(); i++) {
+        int j = next[i - 1];
+        while (j > 0 && str[j] != str[i]) j = next[j - 1];
+        if (str[j] == str[i]) j++;
+        next[i] = j;
+    }
+    return next;
+}
+
+int kmp(string str, string p, vector<int>& next) {
+    int j = 0;
+    for (int i = 0; i < str.size(); i++) {
+        while (j > 0 && str[i] != p[j]) j = next[j - 1];
+        if (str[i] == p[j]) j++;
+        if (j == p.size()) return i + 1;
+    }
+    return -1;
+}
+
+//295. Find Median from Data Stream
+class MedianFinder {
+public:
+    /** initialize your data structure here. */
+    priority_queue<int> small, large;
+    
+    void addNum(int num) {
+        small.push(num);
+        large.push(-small.top());
+        small.pop();
+        if (large.size() > small.size()) {
+            small.push(-large.top());
+            large.pop();
+        }
+    }
+        
+    double findMedian() {
+        if (small.size() > large.size()) {
+            return small.top();
+        }
+        double ans = (double)(small.top() - large.top()) / 2.0;
+        return ans;
+    }
+};
+
 int main(int argc, const char * argv[]) {
-    cout<<numSquares(12)<<endl;
     return 0;
 }
