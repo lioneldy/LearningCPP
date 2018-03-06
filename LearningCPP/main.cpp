@@ -92,19 +92,58 @@ int lengthOfLongestSubstring(string s) {
     return maxLenth;
 }
 
+//5. Longest Palindromic Substring
+string longestPalindrome(string s) {
+    string str = "$#";
+    for (int i = 0; i < s.size(); i++) {
+        str = str + s[i] + "#";
+    }
+    int maxLen = 0;
+    int pos = 2;
+    vector<int> rl(str.size(), 0);
+    for (int id = 1, i = 1; i < str.size(); i++) {
+        if (id + rl[id] > i) rl[i] = min(rl[id * 2 - i], id + rl[id] - i);
+        else rl[i] = 1;
+        while (str[i + rl[i]] == str[i - rl[i]]) rl[i]++;
+        if (rl[i] + i > rl[id] + id) id = i;
+        if (rl[i] - 1 > maxLen) {
+            maxLen = rl[i] - 1;
+            pos = (i - rl[i]) / 2;
+        }
+    }
+    return s.substr(pos, maxLen);
+}
+
 //6. ZigZag Conversion
+//string convert(string s, int numRows) {
+//    if (numRows <= 1) return s;
+//    string ans = "";
+//    long lens = s.length();
+//    int k = 2 * numRows - 2;
+//    for (int i = 0; i < numRows; i++) {
+//        for (int j = i; j < lens; j += k) {
+//            ans = ans + s[j];
+//            int secondj = j + k - 2*i;
+//            if (i != 0 && i != numRows - 1 && secondj < lens)
+//                ans = ans + s[secondj];
+//        }
+//    }
+//    return ans;
+//}
 string convert(string s, int numRows) {
     if (numRows <= 1) return s;
+    vector<string> strs(numRows, "");
+    int step = 1;
+    int row = 0;
+    for (int i = 0; i < s.size(); i++) {
+        if (row == 0) step = 1;
+        if (row == numRows - 1) step = -1;
+        strs[row] = strs[row] + s[i];
+        row += step;
+    }
     string ans = "";
-    long lens = s.length();
-    int k = 2 * numRows - 2;
     for (int i = 0; i < numRows; i++) {
-        for (int j = i; j < lens; j += k) {
-            ans = ans + s[j];
-            int secondj = j + k - 2*i;
-            if (i != 0 && i != numRows - 1 && secondj < lens)
-                ans = ans + s[secondj];
-        }
+        ans = ans + strs[i];
     }
     return ans;
 }
@@ -123,9 +162,9 @@ int reverseInt(int x) {
 
 //9. Palindrome Number
 bool isPalindrome(int x) {
-    if(x < 0 || (x != 0 && x % 10 == 0)) return false;
+    if (x < 0 || (x != 0 && x % 10 == 0)) return false;
     int sum = 0;
-    while(x > sum) {
+    while (x > sum) {
         sum = sum * 10 + x % 10;
         x = x / 10;
     }
@@ -142,22 +181,6 @@ bool isMatch(string s, string p) {
 }
 
 //11. Container With Most Water
-/*int maxArea(vector<int>& height) {
-    long size = height.size();
-    int maxArea = (height[0] < height[1]) ? height[0]:height[1];
-    for (int i = 1; i < size; i ++) {
-        for (int j = 0; j < i; j ++) {
-            int area;
-            if (height[i] < height[j])
-                area = height[i] * (i - j);
-            else area = height[j] * (i - j);
-            if (area > maxArea)
-                maxArea = area;
-        }
-    }
-    return maxArea;
-}*/
-//超时
 int maxArea(vector<int>& height) {
     int size = (int)height.size();
     int maxArea = (size - 1) * min(height[0], height[size - 1]);
@@ -4237,6 +4260,35 @@ public:
     }
 };
 
+//最长回文子串
+int longestSubstr(string str) {
+    int ans = 0;
+    string s = "#";
+    for (int i = 0; i < str.size(); i++) {
+        s = s + str[i] + "#";
+    }
+    vector<int> rl(s.size(), 0);
+    int maxR = 0;
+    int pos = 0;
+    for (int i = 0; i < s.size(); i++) {
+        if (i < maxR) {
+            rl[i] = min(rl[2 * pos - i], maxR - i);
+        } else {
+            rl[i] = 1;
+        }
+        while (i - rl[i] >= 0 && i + rl[i] < s.size() && s[i - rl[i]] == s[i + rl[i]]) {
+            rl[i]++;
+        }
+        if (i + rl[i] > maxR) {
+            maxR = i + rl[i];
+            pos = i;
+        }
+        ans = max(ans, rl[i] - 1);
+    }
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
+    cout<<longestPalindrome("babad")<<endl;
     return 0;
 }
