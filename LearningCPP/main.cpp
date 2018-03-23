@@ -242,7 +242,7 @@ int romanToInt(string s) {
     return ans;
 }
 
-//14. Longest Common Prefix
+//14. Longest Common Prefix 最长公共前缀
 string longestCommonPrefix(vector<string>& strs) {
     if (strs.empty()) return "";
     int maxPrefix = (int)strs[0].length();
@@ -1795,7 +1795,7 @@ TreeNode* sortedArrayToBST(vector<int>& nums) {
     return root;
 }
 
-//110. Balanced Binary Tree
+//110. Balanced Binary Tree 平衡二叉树
 bool isBalanced(TreeNode* root) {
     if (root == NULL) return true;
     else return abs(maxDepth(root->right) - maxDepth(root->left)) <= 1 && isBalanced(root->left) && isBalanced(root->right);
@@ -1874,7 +1874,7 @@ vector<int> getRow(int rowIndex) {
     return res;
 }
 
-//94. Binary Tree Inorder Traversal
+//94. Binary Tree Inorder Traversal 中序遍历
 vector<int> inorderTraversal(TreeNode* root) {
     stack<TreeNode*> s;
     vector<int> ans;
@@ -2755,7 +2755,7 @@ void reorderList(ListNode* head) {
     }
 }
 
-//144. Binary Tree Preorder Traversal
+//144. Binary Tree Preorder Traversal 前序遍历
 vector<int> preorderTraversal(TreeNode* root) {
     vector<int> ans;
     stack<TreeNode*> s;
@@ -2775,7 +2775,7 @@ vector<int> preorderTraversal(TreeNode* root) {
     return ans;
 }
 
-//145. Binary Tree Postorder Traversal
+//145. Binary Tree Postorder Traversal 后序遍历
 vector<int> postorderTraversal(TreeNode* root) {
     vector<int> ans;
     stack<TreeNode*> s;
@@ -4288,7 +4288,128 @@ int longestSubstr(string str) {
     return ans;
 }
 
+//297. Serialize and Deserialize Binary Tree
+class Codec {
+public:
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        ostringstream out;
+        porder(root, out);
+        return out.str();
+    }
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        istringstream is(data);
+        return reBuild(is);
+    }
+private:
+    void porder(TreeNode* root, ostringstream& out) {
+        if (root != nullptr) {
+            out<<to_string(root->val)<<" ";
+            porder(root->left, out);
+            porder(root->right, out);
+        } else {
+            out<<"# ";
+        }
+    }
+    TreeNode* reBuild(istringstream& in) {
+        string s;
+        in>>s;
+        if (s == "#") {
+            return nullptr;
+        }
+        TreeNode* p = new TreeNode(stoi(s));
+        p->left = reBuild(in);
+        p->right = reBuild(in);
+        return p;
+    }
+};
+
+//329. Longest Increasing Path in a Matrix
+int longestIncreasingPath(vector<vector<int>>& matrix) {
+    int rows = (int)matrix.size();
+    if (!rows) return 0;
+    int cols = (int)matrix[0].size();
+    vector<vector<int>> dp(rows, vector<int>(cols, 0));
+    std::function<int(int, int)> dfs = [&] (int x, int y) {
+        if (dp[x][y]) return dp[x][y];
+        vector<vector<int>> dirs = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+        for (auto &dir : dirs) {
+            int xx = x + dir[0], yy = y + dir[1];
+            if (xx < 0 || xx >= rows || yy < 0 || yy >= cols) continue;
+            if (matrix[xx][yy] <= matrix[x][y]) continue;
+            dp[x][y] = std::max(dp[x][y], dfs(xx, yy));
+        }
+        return ++dp[x][y];
+    };
+    int ret = 0;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            ret = std::max(ret, dfs(i, j));
+        }
+    }
+    return ret;
+}
+
+//526. Beautiful Arrangement
+int countHelp(vector<int>& nums, int n) {
+    if (n <= 0) return 1;
+    int ans = 0;
+    for (int i = 0; i < n; i++) {
+        if (nums[i] % n == 0 || n % nums[i] == 0) {
+            swap(nums[i], nums[n - 1]);
+            ans += countHelp(nums, n - 1);
+            swap(nums[i], nums[n - 1]);
+        }
+    }
+    return ans;
+}
+int countArrangement(int N) {
+    vector<int> nums;
+    for (int i = 1; i <= N; i++) {
+        nums.push_back(i);
+    }
+    return countHelp(nums, N);
+}
+
+//299. Bulls and Cows
+string getHint(string secret, string guess) {
+    unordered_map<char, int> dict;
+    int bull = 0, cow = 0;
+    for (char c : secret) {
+        dict[c]++;
+    }
+    for (int i = 0; i < secret.size(); i++) {
+        if (secret[i] == guess[i]) {
+            bull++;
+            dict[secret[i]]--;
+        }
+    }
+    for (int i = 0; i < secret.size(); i++) {
+        if (secret[i] != guess[i] && dict[guess[i]] > 0) {
+            cow++;
+            dict[guess[i]]--;
+        }
+    }
+    return to_string(bull) + "A" + to_string(cow) + "B";
+}
+
+//300. Longest Increasing Subsequence 最长递增子序列
+int lengthOfLIS(vector<int>& nums) {
+    if (nums.empty()) return 0;
+    vector<int> dp(nums.size(), 1);
+    int ans = 1;
+    for (int i = 1; i < nums.size(); i++) {
+        for (int j = 0; j < i; j++) {
+            if (nums[j] < nums[i]) {
+                dp[i] = max(dp[j] + 1, dp[i]);
+                ans = max(dp[i], ans);
+            }
+        }
+    }
+    return ans;
+}
+
 int main(int argc, const char * argv[]) {
-    cout<<longestPalindrome("babad")<<endl;
     return 0;
 }
