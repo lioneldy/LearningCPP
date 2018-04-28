@@ -63,6 +63,22 @@ struct Point {
     Point(int a, int b) : x(a), y(b) {}
 };
 
+//1. Two Sum
+vector<int> twoSum1(vector<int>& nums, int target) {
+    vector<int> ans(2);
+    unordered_map<int, int> dict;
+    for (int i = 0; i < nums.size(); i++) {
+        int tmp = target - nums[i];
+        if (dict.find(tmp) != dict.end()) {
+            ans[0] = dict[tmp];
+            ans[1] = i;
+            return ans;
+        }
+        dict[nums[i]] = i;
+    }
+    return ans;
+}
+
 //2. Add Two Numbers
 ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
     ListNode *sumList = new ListNode(0);
@@ -79,7 +95,7 @@ ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
     return ans -> next;
 }
 
-//3. Longest Substring Without Repeating Characters
+//3. Longest Substring Without Repeating Characters 不重复最长子串
 int lengthOfLongestSubstring(string s) {
     int maxLenth = 0;
     vector<int> dictMap(256,-1);
@@ -92,7 +108,30 @@ int lengthOfLongestSubstring(string s) {
     return maxLenth;
 }
 
-//5. Longest Palindromic Substring
+//4. Median of Two Sorted Arrays
+double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+    int N1 = (int)nums1.size();
+    int N2 = (int)nums2.size();
+    if (N1 < N2) return findMedianSortedArrays(nums2, nums1);    // Make sure A2 is the shorter one.
+    
+    int lo = 0, hi = N2 * 2;
+    while (lo <= hi) {
+        int mid2 = (lo + hi) / 2;   // Try Cut 2
+        int mid1 = N1 + N2 - mid2;  // Calculate Cut 1 accordingly
+        
+        double L1 = (mid1 == 0) ? INT_MIN : nums1[(mid1-1)/2];    // Get L1, R1, L2, R2 respectively
+        double L2 = (mid2 == 0) ? INT_MIN : nums2[(mid2-1)/2];
+        double R1 = (mid1 == N1 * 2) ? INT_MAX : nums1[(mid1)/2];
+        double R2 = (mid2 == N2 * 2) ? INT_MAX : nums2[(mid2)/2];
+        
+        if (L1 > R2) lo = mid2 + 1;        // A1's lower half is too big; need to move C1 left (C2 right)
+        else if (L2 > R1) hi = mid2 - 1;    // A2's lower half too big; need to move C2 left.
+        else return (max(L1,L2) + min(R1, R2)) / 2;    // Otherwise, that's the right cut.
+    }
+    return -1;
+}
+
+//5. Longest Palindromic Substring 马拉车
 string longestPalindrome(string s) {
     string str = "$#";
     for (int i = 0; i < s.size(); i++) {
@@ -322,6 +361,10 @@ int threeSumClosest(vector<int>& nums, int target) {
 //最大公约数
 int getGcd(int a, int b) {
     return (a % b == 0) ? b : getGcd(b, a % b);
+}
+int LeastCommonMultiple (int a, int b) {
+    int t = a * b /getGcd(a, b);
+    return t;
 }
 
 //全排列算法
@@ -2130,19 +2173,18 @@ vector<vector<int>> levelOrder(TreeNode* root) {
     vector<vector<int>> ans;
     queue<TreeNode*> q;
     q.push(root);
-    while (!q.empty()) {
-        int n = (int)q.size();
+    while (!q.empty()) {//队列不为空则说明没有遍历结束
+        int n = (int)q.size();//n为当前层节点数
         vector<int> res;
         while (n--) {
-            TreeNode* tmp = q.front();
-            if (tmp != NULL) {
+            TreeNode* tmp = q.front();//队列第一个节点出队
+            if (tmp != NULL) {//若该节点不为空左右孩子依次入队
                 res.push_back(tmp->val);
                 q.push(tmp->left);
                 q.push(tmp->right);
             }
-            q.pop();
+            q.pop();//该节点遍历结束，出队
         }
-        if (!res.empty()) ans.push_back(res);
     }
     return ans;
 }
@@ -4410,6 +4452,18 @@ int lengthOfLIS(vector<int>& nums) {
     return ans;
 }
 
+int reversePairs(vector<int>& nums) {
+    int cnt = 0;
+    for (int i = 0; i < nums.size(); i++) {
+        for (int j = i + 1; j < nums.size(); j++) {
+            if ((nums[i] + 1) / 2 > nums[j]) cnt++;
+        }
+    }
+    return cnt;
+}
+
 int main(int argc, const char * argv[]) {
+    
     return 0;
 }
+
